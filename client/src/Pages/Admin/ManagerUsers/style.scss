@@ -1,0 +1,146 @@
+.role_render-admin {
+  display: block;
+  width: 70px;
+  background-color: #f75c15;
+  text-transform: capitalize;
+  background-color: orange;
+  color: #fff;
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-size: 0.7rem;
+}
+.role_render-user {
+  display: block;
+  background-color: #2969f1;
+  width: 70px;
+  text-transform: capitalize;
+  color: #fff;
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-size: 0.7rem;
+}
+.ant-table-tbody {
+  text-align: center;
+}
+.wrapper-manager-user {
+  .group-btn {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    .action {
+      display: flex;
+      align-items: center;
+      column-gap: 10px;
+      select {
+        width: 150px;
+        height: 30px;
+        border-radius: 5px;
+        padding: 0 5px;
+        font-size: 0.9rem;
+        option {
+          font-size: 0.9rem;
+        }
+        &:focus {
+          outline: none;
+        }
+      }
+      .btn-add-user {
+        height: 30px;
+        background-color: blue !important;
+        border: none;
+        color: #fff;
+        &:hover {
+          color: #fff;
+          scale: 1.1 !important;
+        }
+      }
+    }
+    .search-user {
+      padding: 0 5px;
+      border-radius: 5px;
+      outline: none;
+      border: 1px solid #333;
+      width: 200px;
+    }
+  }
+  // căn giữa các cột trong bảng
+  .ant-table-thead {
+    tr {
+      .ant-table-cell {
+        text-align: center;
+      }
+    }
+  }
+
+  .ant-pagination {
+    margin-top: 10px;
+    text-align: end;
+  }
+}
+
+form {
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0;
+    label {
+      font-size: 1rem;
+    }
+    input {
+      width: 70%;
+      height: 35px;
+      border: 1px dotted #9b9898;
+      margin: 5px 0;
+      border-radius: 5px;
+      padding: 0 10px;
+      &:focus {
+        outline: 1px solid blue;
+        border: none;
+      }
+    }
+    select {
+      width: 70%;
+      border-radius: 5px;
+      padding: 5px;
+      margin: 10px 0;
+      font-size: 0.9rem;
+      border: 1px dotted #9b9898;
+      option {
+        font-size: 0.9rem;
+      }
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+  .group-btn {
+    display: flex;
+    justify-content: end;
+    column-gap: 20px;
+    button {
+      margin-top: 20px;
+      background-color: transparent;
+      border: 1px solid #000000;
+      color: #000000;
+      width: 25%;
+      cursor: pointer;
+      border-radius: 5px;
+      height: 35px;
+      &:last-child {
+        border: none;
+        color: #fff;
+        background-color: blue;
+        &:hover {
+          color: #fff;
+          scale: 1.1;
+        }
+      }
+      &:hover {
+        border: none;
+        border: 1px solid #333;
+        scale: 1.1;
+      }
+    }
+  }
+}

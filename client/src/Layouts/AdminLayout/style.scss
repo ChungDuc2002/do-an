@@ -1,0 +1,65 @@
+.wrapper-admin-layout {
+  min-height: 100vh;
+  display: flex;
+  column-gap: 20px;
+
+  .menu-admin-layout {
+    width: 18%;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    max-height: 110vh;
+    // background-color: #12377b !important;
+  }
+  // ẩn thanh cuộn mặc định của trình duyệt
+  .menu-admin-layout::-webkit-scrollbar {
+    width: 0.5em; /* Độ rộng của thanh cuộn */
+  }
+
+  .menu-admin-layout::-webkit-scrollbar-track {
+    background: transparent; /* Màu nền của thanh cuộn */
+  }
+
+  .menu-admin-layout::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2); /* Màu của thanh cuộn */
+    border-radius: 0.25em; /* Độ cong của thanh cuộn */
+  }
+  .content {
+    width: 80%;
+    margin-top: 20px;
+    max-height: 100vh;
+    overflow-y: auto;
+    .breadcrumb {
+      border-bottom: 1px solid #e9e9e9;
+      padding-bottom: 10px;
+      .admin-layout-nav {
+        .admin-layout-title {
+          &-left {
+            h1 {
+              font-size: 1.6rem;
+              font-weight: 500;
+            }
+            p {
+              font-size: 1.2rem;
+              font-weight: 700;
+            }
+          }
+        }
+      }
+    }
+    .children {
+      margin-top: 20px;
+    }
+  }
+  .content::-webkit-scrollbar {
+    width: 0.5em; /* Độ rộng của thanh cuộn */
+  }
+
+  .content::-webkit-scrollbar-track {
+    background: transparent; /* Màu nền của thanh cuộn */
+  }
+
+  .content::-webkit-scrollbar-thumb {
+    border-radius: 0.25em; /* Độ cong của thanh cuộn */
+  }
+}
