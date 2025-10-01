@@ -13,6 +13,7 @@ apiUsers.get(
 );
 apiUsers.get('/getUser/:id', usersController.getUserById);
 apiUsers.get('/searchUser', usersController.searchUserByName);
+apiUsers.get('/info', middlewareController.verifyToken, usersController.info);
 
 // * POST API
 apiUsers.post('/login', usersController.Login);

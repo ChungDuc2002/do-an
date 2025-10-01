@@ -1,0 +1,75 @@
+@import '../../Styles/responsive.scss';
+
+.wrapper-profile {
+  margin-top: 100px;
+  @media (max-width: $xs-max-width) {
+    margin-top: 0px;
+  }
+  .container {
+    background-color: #f5f5f5 !important;
+    @media (max-width: $xs-max-width) {
+      width: 90%;
+    }
+  }
+  h1 {
+    text-transform: uppercase;
+    font-weight: 400;
+    text-align: center;
+    @media (max-width: $xs-max-width) {
+      font-size: 1.8rem;
+    }
+  }
+  .ant-divider {
+    @media (max-width: $xs-max-width) {
+      margin: 10px 0;
+    }
+  }
+  .ant-tabs {
+    margin: 50px 0;
+    @media (max-width: $xs-max-width) {
+      flex-direction: column;
+      margin: 10px 0;
+    }
+    .ant-tabs-nav {
+      width: 25%;
+      @media (max-width: $xs-max-width) {
+        width: 100%;
+        border: 1px solid #eee;
+      }
+      .ant-tabs-tab {
+        color: #828282;
+        font-size: 1rem;
+        @media (max-width: $xs-max-width) {
+          margin-top: 0px;
+          width: 100%;
+        }
+        &-active {
+          .ant-tabs-tab-btn {
+            color: #000;
+
+            @media (max-width: $xs-max-width) {
+              border-bottom: 1px solid #eee;
+            }
+          }
+        }
+        .ant-tabs-tab-btn {
+          text-align: left;
+          font-size: 17px;
+          width: 100%;
+        }
+      }
+    }
+    // Ẩn color blue khi active vào menu TABS
+    .ant-tabs-ink-bar {
+      display: none;
+    }
+    .ant-tabs-content-holder {
+      border-left: none;
+      .ant-tabs-tabpane {
+        &-active {
+          padding-left: 5px;
+        }
+      }
+    }
+  }
+}

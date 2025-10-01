@@ -1,0 +1,66 @@
+@import '../../../Styles/responsive.scss';
+
+.wrapper-my-profile {
+  h1 {
+    font-size: 1.5rem;
+    text-align: left !important;
+    @media (max-width: $xs-max-width) {
+      font-size: 1.2rem;
+    }
+  }
+  .title {
+    p {
+      font-size: 1rem;
+      @media (max-width: $xs-max-width) {
+        font-size: 1.2rem;
+      }
+    }
+  }
+  form {
+    label {
+      display: block;
+      padding: 5px 0;
+      font-size: 1rem;
+      @media (max-width: $xs-max-width) {
+        font-size: 0.9rem;
+      }
+    }
+    input,
+    select {
+      display: block;
+      width: 70%;
+      height: 35px;
+      padding: 0 5px;
+      border-radius: 5px;
+      border: 1px solid #333;
+      &:focus {
+        border: none;
+        outline: 1px solid blue;
+      }
+      @media (max-width: $xs-max-width) {
+        width: 100%;
+      }
+    }
+    button {
+      width: 35%;
+      height: 35px;
+      background-color: #c4c4c4;
+      outline: none;
+      border: 1px solid #eee;
+      margin-top: 20px;
+      color: #fff;
+      font-size: 1rem;
+      border-radius: 5px;
+      &:last-child {
+        background-color: #4b4b4b;
+      }
+      &:hover {
+        cursor: pointer;
+        scale: 0.9;
+      }
+      @media (max-width: $xs-max-width) {
+        width: 50%;
+      }
+    }
+  }
+}

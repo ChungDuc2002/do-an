@@ -102,16 +102,16 @@ const AdminLayout = () => {
     },
     {
       key: 'sub4',
-      label: 'Sản phẩm',
+      label: 'Phòng',
       icon: <ProductOutlined />,
       children: [
         {
-          key: '/admin/manager-products',
-          label: 'Quản lý sản phẩm',
+          key: '/admin/create-room',
+          label: 'Tạo mới phòng',
         },
         {
-          key: '/admin/manager-orders',
-          label: 'Quản lý đơn hàng',
+          key: '/admin/manager-rooms',
+          label: 'Quản lý phòng',
         },
         {
           key: '/admin/manager-fashion',

@@ -5,6 +5,11 @@ import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import { InitRouters } from './routers/index.js';
 import { sendData } from './utils/data.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -15,6 +20,8 @@ dotenv.config();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 InitRouters(app);
 

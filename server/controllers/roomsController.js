@@ -1,0 +1,214 @@
+import rooms from '../models/rooms.js';
+
+import multer from 'multer';
+import path from 'path';
+
+// Cấu hình multer
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/'); // Tạo thư mục uploads trong server
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage: storage });
+
+export async function searchRooms(req, res) {
+  try {
+    const {
+      type,
+      minPrice,
+      maxPrice,
+      status,
+      page = 1,
+      limit = 10,
+    } = req.query;
+
+    // Tạo object chứa điều kiện tìm kiếm
+    let searchConditions = {};
+
+    // Thêm điều kiện tìm theo loại phòng nếu có
+    if (type) {
+      searchConditions.type = type;
+    }
+
+    // Thêm điều kiện tìm theo status nếu có
+    if (status) {
+      searchConditions.status = status;
+    }
+
+    // Thêm điều kiện tìm theo khoảng giá nếu có
+    if (minPrice || maxPrice) {
+      searchConditions.price = {};
+      if (minPrice) searchConditions.price.$gte = parseInt(minPrice);
+      if (maxPrice) searchConditions.price.$lte = parseInt(maxPrice);
+    }
+
+    // Sử dụng find thay vì paginate vì có lỗi với plugin
+    const roomsList = await rooms
+      .find(searchConditions)
+      .populate('owner', 'fullName email phone')
+      .populate('currentTenant', 'fullName')
+      .sort('-createdAt')
+      .skip((parseInt(page) - 1) * parseInt(limit))
+      .limit(parseInt(limit));
+
+    // Đếm tổng số phòng thỏa điều kiện
+    const total = await rooms.countDocuments(searchConditions);
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        docs: roomsList,
+        totalDocs: total,
+        page: parseInt(page),
+        limit: parseInt(limit),
+      },
+    });
+  } catch (error) {
+    console.error('Search rooms error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Lỗi tìm kiếm phòng',
+      error: error.message,
+    });
+  }
+}
+
+export async function createRoom(req, res) {
+  try {
+    upload.fields([
+      { name: 'images', maxCount: 6 },
+      { name: 'rules', maxCount: 3 },
+    ])(req, res, async function (err) {
+      if (err) {
+        return res.status(400).json({ message: 'Lỗi upload file' });
+      }
+
+      const roomData = req.body;
+
+      // Parse JSON strings
+      if (roomData.address) {
+        roomData.address = JSON.parse(roomData.address);
+      }
+      if (roomData.amenities) {
+        roomData.amenities = JSON.parse(roomData.amenities);
+      }
+
+      // Thêm đường dẫn hình ảnh
+      if (req.files) {
+        // Xử lý images
+        if (req.files['images']) {
+          roomData.images = req.files['images'].map(
+            (file) => `/uploads/${file.filename}`
+          );
+        }
+        // Xử lý rules
+        if (req.files['rules']) {
+          roomData.rules = req.files['rules'].map(
+            (file) => `/uploads/${file.filename}`
+          );
+        }
+      }
+
+      const newRoom = await rooms.create(roomData);
+      return res.status(201).json({
+        message: 'Tạo phòng thành công',
+        room: newRoom,
+      });
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+
+export async function updateRoom(req, res) {
+  try {
+    const { id } = req.params;
+    const updatedRoom = await rooms.findByIdAndUpdate(
+      id,
+      { ...req.body },
+      { new: true }
+    );
+    if (!updatedRoom) {
+      return res.status(404).json({ message: 'Không tìm thấy phòng' });
+    }
+    return res.status(200).json({
+      message: 'Cập nhật phòng thành công',
+      room: updatedRoom,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+
+export async function getRoomsByType(req, res) {
+  try {
+    const { type } = req.params;
+    const roomsList = await rooms
+      .find({ type })
+      .populate('owner', 'fullName email phone')
+      .populate('currentTenant', 'fullName');
+    return res.status(200).json(roomsList);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+
+export async function deleteRoom(req, res) {
+  try {
+    const { id } = req.params;
+    const deletedRoom = await rooms.findByIdAndDelete(id);
+    if (!deletedRoom) {
+      return res.status(404).json({ message: 'Không tìm thấy phòng' });
+    }
+    return res.status(200).json({ message: 'Xóa phòng thành công' });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+
+export async function getAllRooms(req, res) {
+  try {
+    const { page = 1, limit = 10, sort = '-createdAt' } = req.query;
+
+    const options = {
+      page: parseInt(page),
+      limit: parseInt(limit),
+      sort,
+      populate: [
+        { path: 'owner', select: 'fullName email phone' },
+        { path: 'currentTenant', select: 'fullName' },
+      ],
+    };
+
+    const roomsList = await rooms.paginate({}, options);
+    return res.status(200).json(roomsList);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+
+export async function getRoomById(req, res) {
+  try {
+    const { id } = req.params;
+    const room = await rooms
+      .findById(id)
+      .populate('owner', 'fullName email phone')
+      .populate('currentTenant', 'fullName');
+
+    if (!room) {
+      return res.status(404).json({ message: 'Không tìm thấy phòng' });
+    }
+
+    // Tăng lượt xem
+    room.views += 1;
+    await room.save();
+
+    return res.status(200).json(room);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}

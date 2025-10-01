@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import LoginIcon from '../Icons/LoginIcon';
 import NewUserIcon from './../Icons/NewUserIcon';
@@ -10,18 +10,49 @@ import {
   LogoutOutlined,
   HomeOutlined,
 } from '@ant-design/icons';
+import axios from 'axios';
 import './header.scss';
 
 const HeaderClient = () => {
+  const [nameAvatar, setNameAvatar] = useState();
+
   const auth = localStorage.getItem('authSon');
+
+  useEffect(() => {
+    const getUserById = async () => {
+      try {
+        if (auth) {
+          // Kiểm tra auth tồn tại trước khi gọi API
+          const token = JSON.parse(auth);
+          const result = await axios.get('http://localhost:5000/info', {
+            headers: {
+              token: `Bearer ${token}`,
+            },
+          });
+          setNameAvatar(result.data.fullName);
+        }
+      } catch (error) {
+        console.error('Error fetching user:', error);
+      }
+    };
+    getUserById();
+  }, [auth]);
 
   const menuItems = [
     {
       key: '0',
       label: (
         <div className="user-info">
-          <Avatar size="large" src={auth?.avatar} />
-          <span className="user-name">{auth?.fullName || 'User Name'}</span>
+          <Avatar
+            size="large"
+            style={{
+              cursor: 'pointer',
+              backgroundColor: '#0247a6',
+            }}
+          >
+            {nameAvatar ? nameAvatar.charAt(0).toUpperCase() : 'U'}
+          </Avatar>
+          <span className="user-name">{nameAvatar || 'User Name'}</span>
         </div>
       ),
       style: { padding: '10px' },
@@ -32,19 +63,25 @@ const HeaderClient = () => {
       key: '1',
       label: 'Thông tin cá nhân',
       icon: <UserOutlined />,
-      onClick: () => {},
+      onClick: () => {
+        window.location.href = '/profile/1';
+      },
     },
     {
       key: '2',
       label: 'Thông tin tài khoản',
       icon: <SettingOutlined />,
-      onClick: () => {},
+      onClick: () => {
+        window.location.href = '/profile/2';
+      },
     },
     {
       key: '3',
-      label: 'Hướng dẫn sử dụng',
+      label: 'Thông tin lưu trú',
       icon: <HomeOutlined />,
-      onClick: () => {},
+      onClick: () => {
+        window.location.href = '/profile/2';
+      },
     },
     { type: 'divider' },
     {
@@ -54,6 +91,7 @@ const HeaderClient = () => {
       onClick: () => {
         localStorage.removeItem('authSon');
         window.location.reload();
+        window.location.href = '/';
       },
     },
   ];
@@ -62,7 +100,9 @@ const HeaderClient = () => {
     <div className="wrapper-header">
       <div className="container">
         <div className="wrapper-header-logo">
-          <h2>Phongtro123.com</h2>
+          <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <h2>Phongtro123.com</h2>
+          </Link>
         </div>
         <div className="wrapper-header-nav">
           <ul>
@@ -107,11 +147,13 @@ const HeaderClient = () => {
                 >
                   <Avatar
                     size="large"
-                    src={
-                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyJU-aP5i--kHv6H-gjavFsq-tD-a6oe1-Kw&s'
-                    }
-                    style={{ cursor: 'pointer' }}
-                  />
+                    style={{
+                      cursor: 'pointer',
+                      backgroundColor: '#0247a6',
+                    }}
+                  >
+                    {nameAvatar ? nameAvatar.charAt(0).toUpperCase() : 'U'}
+                  </Avatar>
                 </Dropdown>
               </div>
             </div>

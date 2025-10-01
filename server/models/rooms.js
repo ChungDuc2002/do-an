@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 const roomSchema = mongoose.Schema(
   {
@@ -22,6 +23,10 @@ const roomSchema = mongoose.Schema(
         required: true,
       },
     ],
+    acreage: {
+      type: Number,
+      required: true,
+    },
     // tiện nghi
     amenities: [
       {
@@ -41,7 +46,7 @@ const roomSchema = mongoose.Schema(
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
+      // required: true,
     },
     // người đang thuê phòng hiện tại
     currentTenant: {
@@ -85,3 +90,6 @@ const roomSchema = mongoose.Schema(
   },
   { timestamps: true }
 );
+roomSchema.plugin(mongoosePaginate);
+
+export default mongoose.model('Rooms', roomSchema);

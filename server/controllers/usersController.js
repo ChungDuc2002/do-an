@@ -2,6 +2,15 @@ import users from '../models/users.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
+export async function info(req, res) {
+  try {
+    const user = await users.findById(req.user.id);
+    return res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
 export async function getAllUsers(req, res) {
   try {
     const allUsers = await users.find();

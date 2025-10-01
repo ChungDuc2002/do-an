@@ -26,6 +26,10 @@ const userSchema = mongoose.Schema(
       type: String,
       default: 'default-avatar.png',
     },
+    gender: {
+      type: String,
+      enum: ['nam', 'nu'],
+    },
     isAdmin: {
       type: Boolean,
       default: false,

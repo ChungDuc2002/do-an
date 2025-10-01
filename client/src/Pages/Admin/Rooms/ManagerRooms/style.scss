@@ -1,0 +1,142 @@
+.wrapper-manager-rooms {
+  .filter-section {
+    .filter-item {
+      margin-bottom: 16px;
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        color: #666;
+      }
+    }
+  }
+
+  .rooms-section {
+    .ant-row {
+      justify-content: center;
+      align-items: center;
+    }
+    .room-card {
+      margin-bottom: 16px;
+
+      h3 {
+        margin: 0 0 8px 0;
+        color: #1890ff;
+      }
+
+      p {
+        margin: 4px 0;
+        color: #666;
+      }
+
+      img {
+        border-radius: 4px;
+      }
+    }
+  }
+  .room-info {
+    .label {
+      font-weight: 500;
+      color: #666;
+      margin-right: 8px;
+    }
+
+    p {
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .price {
+      color: #f5222d;
+      font-weight: 500;
+    }
+
+    .type {
+      .ant-tag {
+        margin: 0;
+        text-transform: capitalize;
+      }
+    }
+
+    .amenities {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 12px;
+      .label {
+        width: 18%;
+      }
+      &-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+
+        .ant-tag {
+          margin: 0;
+          font-size: 12px;
+          padding: 2px 8px;
+          border-radius: 4px;
+
+          &:hover {
+            transform: translateY(-1px);
+            transition: all 0.3s ease;
+          }
+        }
+      }
+    }
+
+    .status-tag {
+      font-size: 13px;
+      padding: 2px 12px;
+      border-radius: 4px;
+    }
+  }
+
+  // Responsive
+  @media (max-width: 768px) {
+    .room-info {
+      .amenities {
+        flex-direction: column;
+        gap: 8px;
+
+        &-tags {
+          width: 100%;
+        }
+      }
+    }
+  }
+
+  .pagination-section {
+    margin-top: 24px;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .ant-card {
+    margin-bottom: 0px !important;
+    .ant-card-body {
+      padding: 16px;
+      img {
+        height: 120px !important;
+      }
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .wrapper-manager-rooms {
+    .ant-row {
+      flex-direction: column;
+    }
+
+    .filter-section,
+    .rooms-section {
+      width: 100%;
+    }
+
+    .filter-section {
+      margin-bottom: 24px;
+    }
+  }
+}

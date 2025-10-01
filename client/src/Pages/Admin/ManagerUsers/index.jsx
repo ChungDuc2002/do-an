@@ -44,25 +44,22 @@ const ManagerUsers = () => {
 
   const columns = [
     { title: 'Full Name', dataIndex: 'fullName', key: 'fullName' },
-    {
-      title: 'Avatar',
-      dataIndex: 'avatar',
-      key: 'avatar',
-      render: (text, record) => (
-        <img
-          src={
-            record.avatar
-              ? record.avatar
-              : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrHT9KQ3vag-Gdd9sjA7pi6zl2f_ho4Gh7Vg&s'
-          }
-          alt=""
-          style={{ width: '50px', height: '50px' }}
-        />
-      ),
-    },
     { title: 'Email', dataIndex: 'email', key: 'email' },
     { title: 'Phone', dataIndex: 'phone', key: 'phone' },
-
+    {
+      title: 'Gender',
+      dataIndex: 'gender',
+      key: 'gender',
+      render: (text, record) => {
+        if (text === 'nam') {
+          return 'Nam';
+        } else if (text === 'nu') {
+          return 'Nữ';
+        } else {
+          return text || 'Không xác định';
+        }
+      },
+    },
     {
       title: 'Created At',
       key: 'createdAt',
@@ -301,6 +298,20 @@ function ModalEditUser({ id, onCancel }) {
               setUserUpdate({ ...userUpdate, phone: e.target.value })
             }
           />
+        </div>
+        <div className="row">
+          <label htmlFor="">Gender</label>
+          <select
+            name=""
+            id=""
+            value={userUpdate?.gender}
+            onChange={(e) =>
+              setUserUpdate({ ...userUpdate, gender: e.target.value })
+            }
+          >
+            <option value="nam">Nam</option>
+            <option value="nu">Nữ</option>
+          </select>
         </div>
         <div className="row">
           <label htmlFor="">Role </label>
