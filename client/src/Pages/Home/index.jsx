@@ -72,7 +72,9 @@ const HomePage = () => {
         </div>
       </div>
       {/* nhà nguyên căn */}
-      <div className="wrapper-home-whole_house"></div>
+      <div className="container wrapper-home-whole_house">
+        <h1 className="title">Nhà nguyên căn</h1>
+      </div>
       {/* căn hộ */}
       <div className="wrapper-home-apartment"></div>
       {/* phòng trọ */}

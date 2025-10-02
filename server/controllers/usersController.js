@@ -93,21 +93,36 @@ export async function deleteUser(req, res) {
 }
 
 export async function updateUser(req, res) {
+  // try {
+  //   const { id } = req.params;
+  //   const updatedData = req.body;
+  //   if (updatedData.password) {
+  //     const salt = await bcrypt.genSalt(10);
+  //     updatedData.password = await bcrypt.hash(updatedData.password, salt);
+  //   }
+  //   const updatedUser = await users.findByIdAndUpdate(id, updatedData, {
+  //     new: true,
+  //   });
+  //   if (!updatedUser) {
+  //     return res.status(404).json({ message: 'User not found' });
+  //   }
+  //   const { password, ...others } = updatedUser._doc;
+  //   return res.status(200).json(others);
+  // } catch (error) {
+  //   return res.status(500).json({ message: error.message });
+  // }
   try {
-    const { id } = req.params;
-    const updatedData = req.body;
-    if (updatedData.password) {
-      const salt = await bcrypt.genSalt(10);
-      updatedData.password = await bcrypt.hash(updatedData.password, salt);
-    }
-    const updatedUser = await users.findByIdAndUpdate(id, updatedData, {
-      new: true,
-    });
-    if (!updatedUser) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-    const { password, ...others } = updatedUser._doc;
-    return res.status(200).json(others);
+    const id = req.params.id;
+    const result = await users.findByIdAndUpdate(
+      id,
+      {
+        //* đặt các trường và giá trị mới cho bản ghi người dùng dựa trên req.body
+        $set: req.body,
+      },
+      //* trả về bản ghi mới sau khi cập nhật
+      { new: true }
+    );
+    return res.status(200).json(result);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

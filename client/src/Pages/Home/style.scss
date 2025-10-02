@@ -72,6 +72,15 @@
       }
     }
   }
+  &-whole_house {
+    background-color: #f9f6f1;
+    .title {
+      text-transform: uppercase;
+      color: #0247a6;
+      font-weight: 550;
+      padding: 10px 0;
+    }
+  }
   &-partner {
     margin: 50px 0;
     img {
