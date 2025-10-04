@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import LoginIcon from '../Icons/LoginIcon';
 import NewUserIcon from './../Icons/NewUserIcon';
 import HeartIcon from '../Icons/HeartIcon';
+import logo from '../../Assets/logo_page.png';
 import { Badge, Avatar, Dropdown } from 'antd';
 import {
   UserOutlined,
@@ -101,7 +102,7 @@ const HeaderClient = () => {
       <div className="container">
         <div className="wrapper-header-logo">
           <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-            <h2>Phongtro123.com</h2>
+            <img src={logo} alt="" />
           </Link>
         </div>
         <div className="wrapper-header-nav">

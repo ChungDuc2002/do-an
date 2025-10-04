@@ -118,7 +118,7 @@ const ManagerRoomPage = () => {
       <Row gutter={24}>
         {/* Filter section remains the same */}
         <Col span={8} className="filter-section">
-          <Card title="Bộ lọc tìm kiếm">
+          <Card title="Bộ lọc tìm kiếm" style={{ width: '100%' }}>
             <Space direction="vertical" style={{ width: '100%' }}>
               <div className="filter-item">
                 <label>Loại phòng:</label>
@@ -185,7 +185,11 @@ const ManagerRoomPage = () => {
             ) : (
               rooms.map((room) => (
                 <Col span={24} key={room._id}>
-                  <Card hoverable className="room-card">
+                  <Card
+                    hoverable
+                    className="room-card"
+                    style={{ width: '100%' }}
+                  >
                     <Row gutter={16}>
                       <Col span={6}>
                         <img

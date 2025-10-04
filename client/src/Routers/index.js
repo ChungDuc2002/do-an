@@ -6,6 +6,7 @@ import Register from '../Pages/Register';
 import ProfilePage from '../Pages/Profile';
 import InformationProfile from '../Pages/Profile/information';
 import InfoRooms from '../Pages/Profile/rooms';
+import RoomDetail from '../Pages/RoomDetail';
 import AdminLayout from './../Layouts/AdminLayout';
 import ManagerUsers from '../Pages/Admin/ManagerUsers';
 import CreateRoomPage from './../Pages/Admin/Rooms/CreateRooms';
@@ -33,6 +34,10 @@ const InitRouters = [
       {
         path: '/profile',
         element: <InfoRooms />,
+      },
+      {
+        path: '/rooms/:id',
+        element: <RoomDetail />,
       },
     ],
   },

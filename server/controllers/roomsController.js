@@ -145,13 +145,20 @@ export async function updateRoom(req, res) {
 }
 
 export async function getRoomsByType(req, res) {
+  // try {
+  //   const { type } = req.params;
+  //   const roomsList = await rooms
+  //     .find({ type })
+  //     .populate('owner', 'fullName email phone')
+  //     .populate('currentTenant', 'fullName');
+  //   return res.status(200).json(roomsList);
+  // } catch (error) {
+  //   return res.status(500).json({ message: error.message });
+  // }
+
   try {
-    const { type } = req.params;
-    const roomsList = await rooms
-      .find({ type })
-      .populate('owner', 'fullName email phone')
-      .populate('currentTenant', 'fullName');
-    return res.status(200).json(roomsList);
+    const products = await rooms.find({ type: req.query.type });
+    return res.status(200).json(products);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

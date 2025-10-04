@@ -109,6 +109,8 @@ function AddNewRoom({ onCancel }) {
       formData.append('price', values.price);
       formData.append('type', values.type);
       formData.append('acreage', values.acreage.toString());
+      formData.append('electricity', values.electricity.toString());
+      formData.append('water', values.water.toString());
 
       // Convert amenities array to JSON string
       formData.append('amenities', JSON.stringify(values.amenities));
@@ -204,6 +206,34 @@ function AddNewRoom({ onCancel }) {
                 }
                 parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
                 placeholder="Nhập giá thuê"
+              />
+            </Form.Item>
+            <Form.Item
+              name="electricity"
+              label="Tiền điện (VNĐ/tháng)"
+              rules={[{ required: true, message: 'Vui lòng nhập tiền điện!' }]}
+            >
+              <InputNumber
+                style={{ width: '100%' }}
+                formatter={(value) =>
+                  `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                }
+                parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+                placeholder="Nhập giá tiền điện"
+              />
+            </Form.Item>
+            <Form.Item
+              name="water"
+              label="Tiền nước (VNĐ/tháng)"
+              rules={[{ required: true, message: 'Vui lòng nhập tiền nước!' }]}
+            >
+              <InputNumber
+                style={{ width: '100%' }}
+                formatter={(value) =>
+                  `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                }
+                parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+                placeholder="Nhập giá tiền nước"
               />
             </Form.Item>
             <Form.Item

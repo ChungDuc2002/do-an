@@ -1,0 +1,129 @@
+.wrapper-detail-room {
+  padding-top: 100px;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  .title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #1890ff;
+  }
+
+  .room-type {
+    margin-bottom: 16px;
+  }
+
+  .address {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #666;
+    margin-bottom: 24px;
+
+    svg {
+      color: #1890ff;
+    }
+  }
+
+  .images-container {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 32px;
+
+    .main-images {
+      flex: 2;
+      .ant-image {
+        width: 100% !important;
+      }
+      .main-image {
+        width: 100%;
+        height: 470px;
+        object-fit: cover;
+        border-radius: 8px;
+      }
+    }
+
+    .sub-images {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 8px;
+
+      .sub-image {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+
+        &:hover {
+          transform: scale(1.05);
+        }
+      }
+    }
+  }
+
+  .room-info {
+    h2 {
+      font-size: 20px;
+      color: #1890ff;
+      margin-bottom: 16px;
+    }
+
+    .price-section {
+      background: #f8f8f8;
+      padding: 24px;
+      border-radius: 8px;
+      margin-bottom: 24px;
+
+      p {
+        margin-bottom: 12px;
+        display: flex;
+        justify-content: space-between;
+
+        span {
+          font-weight: 500;
+          color: #0047a9;
+        }
+      }
+
+      .price span {
+        font-size: 20px;
+      }
+    }
+
+    .description-section {
+      margin-bottom: 24px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    .amenities-section {
+      margin-bottom: 50px;
+      .amenities-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+
+        .ant-tag {
+          padding: 4px 12px;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .wrapper-detail-room {
+    .images-container {
+      flex-direction: column;
+
+      .main-images .main-image {
+        height: 300px;
+      }
+    }
+  }
+}

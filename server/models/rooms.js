@@ -23,6 +23,15 @@ const roomSchema = mongoose.Schema(
         required: true,
       },
     ],
+    // tien dien
+    electricity: {
+      type: Number,
+    },
+    // tien nuoc
+    water: {
+      type: Number,
+    },
+    // dien tich
     acreage: {
       type: Number,
       required: true,
