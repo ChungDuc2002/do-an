@@ -8,8 +8,9 @@ import { toast } from 'react-hot-toast';
 import axios from 'axios';
 import './style.scss';
 
-const CardPage = ({ rooms }) => {
+const CardPage = ({ rooms, onDelete }) => {
   const [userId, setUserId] = useState('');
+  const [favorite, setFavorite] = React.useState([]);
 
   const auth = localStorage.getItem('authSon');
   const navigate = useNavigate();
@@ -35,24 +36,47 @@ const CardPage = ({ rooms }) => {
     getIdUser();
   }, []);
 
+  useEffect(() => {
+    const getFavorite = async () => {
+      if (userId) {
+        try {
+          const res = await axios.get(
+            `http://localhost:5000/favorite/getFavorites/${userId}`
+          );
+          console.log(res.data);
+          setFavorite(res.data);
+        } catch (error) {
+          console.log(error.message);
+        }
+      }
+    };
+    getFavorite();
+  }, [userId]);
+
   const handleNavigateToRoom = () => {
     navigate(`/rooms/${rooms._id}`);
   };
 
-  const handleAddToFavorite = async () => {
-    if (auth) {
-      try {
-        const data = {
-          userId,
-          roomId: rooms._id,
-        };
-        await axios.post('http://localhost:5000/favorite/addToFavorite', data);
-        toast.success('Thêm vào yêu thích thành công !');
-      } catch (err) {
-        toast.error('Phòng đã có trong danh sách yêu thích !');
+  const handleDeleteFavorite = async (idRoom) => {
+    try {
+      const result = await axios.delete(
+        `http://localhost:5000/favorite/removeFavorite/${userId}/${idRoom}`
+      );
+
+      if (result.data.success) {
+        toast.success('Đã xóa khỏi danh sách yêu thích');
+        onDelete && onDelete(idRoom);
+
+        // Cập nhật lại danh sách favorite local
+        setFavorite((prev) =>
+          prev.filter((item) => item.roomId._id !== idRoom)
+        );
+      } else {
+        toast.error(result.data.message || 'Xóa thất bại');
       }
-    } else {
-      toast.error('Vui lòng đăng nhập để thêm phòng vào mục yêu thích');
+    } catch (err) {
+      toast.error('Xóa thất bại: ' + err.message);
+      console.error('Delete favorite error:', err);
     }
   };
 
@@ -77,7 +101,7 @@ const CardPage = ({ rooms }) => {
       <Meta title={rooms.title} onClick={handleNavigateToRoom} />
       <Space>
         <span className="icon">
-          <HeartFilled onClick={handleAddToFavorite} />
+          <HeartFilled onClick={() => handleDeleteFavorite(rooms._id)} />
         </span>
       </Space>
       <Space>
