@@ -16,6 +16,8 @@ import './header.scss';
 
 const HeaderClient = () => {
   const [nameAvatar, setNameAvatar] = useState();
+  const [userId, setUserId] = useState('');
+  const [favoriteCount, setFavoriteCount] = useState(0);
 
   const auth = localStorage.getItem('authSon');
 
@@ -30,6 +32,7 @@ const HeaderClient = () => {
               token: `Bearer ${token}`,
             },
           });
+          setUserId(result.data._id);
           setNameAvatar(result.data.fullName);
         }
       } catch (error) {
@@ -38,6 +41,28 @@ const HeaderClient = () => {
     };
     getUserById();
   }, [auth]);
+
+  const fetchFavorite = async () => {
+    if (userId) {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/favorite/getFavorites/${userId}`
+        );
+        console.log('aaaa', response.data);
+
+        setFavoriteCount(response.data.length);
+      } catch (error) {
+        console.log('error', error);
+      }
+    }
+  };
+  useEffect(() => {
+    fetchFavorite();
+    const interval = setInterval(() => {
+      fetchFavorite();
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [userId]);
 
   const menuItems = [
     {
@@ -107,10 +132,18 @@ const HeaderClient = () => {
         </div>
         <div className="wrapper-header-nav">
           <ul>
-            <li>Phòng trọ</li>
-            <li>Nhà nguyên căn</li>
-            <li>Căn hộ</li>
-            <li>Blog</li>
+            <li>
+              <Link to="/rooms?type=phong-tro">Phòng trọ</Link>
+            </li>
+            <li>
+              <Link to="/rooms?type=nha-nguyen-can">Nhà nguyên căn</Link>
+            </li>
+            <li>
+              <Link to="/rooms?type=can-ho">Căn hộ</Link>
+            </li>
+            <li>
+              <Link to="">Blog</Link>
+            </li>
           </ul>
         </div>
 
@@ -134,7 +167,7 @@ const HeaderClient = () => {
             <div className="wrapper-header-user-actions">
               <div className="favorite">
                 <Link to="/favorite">
-                  <Badge count={1}>
+                  <Badge count={favoriteCount}>
                     <HeartIcon />
                   </Badge>
                 </Link>

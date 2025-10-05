@@ -26,8 +26,6 @@ const RoomDetail = () => {
         const response = await axios.get(
           `http://localhost:5000/room/getRoomById/${id}`
         );
-        console.log(response.data);
-
         setRoom(response.data);
       } catch (error) {
         console.error('Error fetching product:', error);
@@ -100,38 +98,38 @@ const RoomDetail = () => {
         <div className="price-section">
           <h2>Thông tin giá</h2>
           <p className="price">
-            <p style={{ display: 'flex', gap: '10px' }}>
+            <span style={{ display: 'flex', gap: '10px' }}>
               <DollarOutlined style={{ color: 'black' }} />
               Giá thuê :
-            </p>
-            <span>{room.price.toLocaleString()} VNĐ/tháng</span>
+            </span>
+            <span>{room.price?.toLocaleString()} VNĐ/tháng</span>
           </p>
           <p>
-            <p style={{ display: 'flex', gap: '10px' }}>
+            <span style={{ display: 'flex', gap: '10px' }}>
               <HarmonyOSOutlined style={{ color: 'black' }} />
               Diện tích :
-            </p>
+            </span>
             <span>{room.acreage} m²</span>
           </p>
           <p>
-            <p style={{ display: 'flex', gap: '10px' }}>
+            <span style={{ display: 'flex', gap: '10px' }}>
               <DollarOutlined style={{ color: 'black' }} />
               Tiền điện :
-            </p>{' '}
+            </span>{' '}
             <span>{room.electricity?.toLocaleString()} VNĐ/số</span>
           </p>
           <p>
-            <p style={{ display: 'flex', gap: '10px' }}>
+            <span style={{ display: 'flex', gap: '10px' }}>
               <DollarOutlined style={{ color: 'black' }} />
               Tiền nước :
-            </p>
+            </span>
             <span>{room.water?.toLocaleString()} VNĐ/khối</span>
           </p>
           <p>
-            <p style={{ display: 'flex', gap: '10px' }}>
+            <span style={{ display: 'flex', gap: '10px' }}>
               <FieldTimeOutlined style={{ color: 'black' }} />
               Ngày đăng:{' '}
-            </p>
+            </span>
             <span>{moment(room.createdAt).format('DD/MM/YYYY')}</span>
           </p>
         </div>

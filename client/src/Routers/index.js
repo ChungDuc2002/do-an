@@ -4,6 +4,8 @@ import NotFound from '../Pages/NotFound';
 import Login from '../Pages/Login';
 import Register from '../Pages/Register';
 import ProfilePage from '../Pages/Profile';
+import RoomsPage from '../Pages/Rooms';
+import SearchPage from '../Pages/Search';
 import InformationProfile from '../Pages/Profile/information';
 import InfoRooms from '../Pages/Profile/rooms';
 import RoomDetail from '../Pages/RoomDetail';
@@ -43,6 +45,14 @@ const InitRouters = [
       {
         path: '/favorite',
         element: <FavoritePage />,
+      },
+      {
+        path: '/rooms',
+        element: <RoomsPage />,
+      },
+      {
+        path: '/search',
+        element: <SearchPage />,
       },
     ],
   },

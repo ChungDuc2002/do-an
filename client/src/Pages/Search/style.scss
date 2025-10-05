@@ -1,0 +1,37 @@
+.search-page {
+  padding-top: 100px;
+
+  .filter-card {
+    position: sticky;
+    top: 100px;
+
+    .filter-item {
+      margin-bottom: 16px;
+      label {
+        display: block;
+        margin-bottom: 8px;
+        color: #666;
+      }
+    }
+  }
+
+  .loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+  }
+
+  .ant-card {
+    .ant-card-meta-title {
+      color: #1890ff;
+      margin-bottom: 12px;
+    }
+
+    .ant-card-meta-description {
+      p {
+        margin-bottom: 8px;
+      }
+    }
+  }
+}

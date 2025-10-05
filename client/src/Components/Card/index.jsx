@@ -93,8 +93,8 @@ const CardPage = ({ rooms }) => {
         <span className="type">
           {rooms.type === 'nha-nguyen-can'
             ? 'Nhà nguyên căn'
-            : rooms.type === 'nha-tro'
-            ? 'Nhà trọ'
+            : rooms.type === 'phong-tro'
+            ? 'Phòng trọ'
             : rooms.type === 'can-ho'
             ? 'Căn hộ'
             : rooms.type}

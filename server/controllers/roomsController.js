@@ -21,41 +21,37 @@ export async function searchRooms(req, res) {
       type,
       minPrice,
       maxPrice,
-      status,
+      minAcreage,
+      maxAcreage,
       page = 1,
       limit = 10,
     } = req.query;
 
-    // Tạo object chứa điều kiện tìm kiếm
     let searchConditions = {};
 
-    // Thêm điều kiện tìm theo loại phòng nếu có
     if (type) {
       searchConditions.type = type;
     }
 
-    // Thêm điều kiện tìm theo status nếu có
-    if (status) {
-      searchConditions.status = status;
-    }
-
-    // Thêm điều kiện tìm theo khoảng giá nếu có
     if (minPrice || maxPrice) {
       searchConditions.price = {};
       if (minPrice) searchConditions.price.$gte = parseInt(minPrice);
       if (maxPrice) searchConditions.price.$lte = parseInt(maxPrice);
     }
 
-    // Sử dụng find thay vì paginate vì có lỗi với plugin
+    if (minAcreage || maxAcreage) {
+      searchConditions.acreage = {};
+      if (minAcreage) searchConditions.acreage.$gte = parseInt(minAcreage);
+      if (maxAcreage) searchConditions.acreage.$lte = parseInt(maxAcreage);
+    }
+
     const roomsList = await rooms
       .find(searchConditions)
       .populate('owner', 'fullName email phone')
-      .populate('currentTenant', 'fullName')
       .sort('-createdAt')
       .skip((parseInt(page) - 1) * parseInt(limit))
       .limit(parseInt(limit));
 
-    // Đếm tổng số phòng thỏa điều kiện
     const total = await rooms.countDocuments(searchConditions);
 
     return res.status(200).json({
@@ -145,20 +141,23 @@ export async function updateRoom(req, res) {
 }
 
 export async function getRoomsByType(req, res) {
-  // try {
-  //   const { type } = req.params;
-  //   const roomsList = await rooms
-  //     .find({ type })
-  //     .populate('owner', 'fullName email phone')
-  //     .populate('currentTenant', 'fullName');
-  //   return res.status(200).json(roomsList);
-  // } catch (error) {
-  //   return res.status(500).json({ message: error.message });
-  // }
-
   try {
     const products = await rooms.find({ type: req.query.type });
     return res.status(200).json(products);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+
+export async function getTypeRoom(req, res) {
+  const { type } = req.params;
+
+  try {
+    const room = await rooms.find({ type: { $in: [type] } });
+    if (room.length === 0) {
+      return res.status(404).json({ message: 'No room found in this type' });
+    }
+    return res.status(200).json(room);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

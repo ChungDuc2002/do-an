@@ -10,6 +10,8 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css';
 import './style.scss';
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
   const [roomsWholeHouse, setRoomsWholeHouse] = useState([]);
@@ -61,6 +63,30 @@ const HomePage = () => {
     getMotelRoom();
   }, []);
 
+  const navigate = useNavigate();
+  const [filters, setFilters] = useState({
+    type: '',
+    price: '',
+    acreage: '',
+  });
+
+  const handleFilterChange = (e, field) => {
+    setFilters((prev) => ({
+      ...prev,
+      [field]: e.target.value,
+    }));
+  };
+
+  const handleSearch = () => {
+    const searchParams = new URLSearchParams();
+
+    if (filters.type) searchParams.append('type', filters.type);
+    if (filters.price) searchParams.append('price', filters.price);
+    if (filters.acreage) searchParams.append('acreage', filters.acreage);
+
+    navigate(`/search?${searchParams.toString()}`);
+  };
+
   return (
     <div className="wrapper-home">
       <div className="wrapper-home-banner">
@@ -83,19 +109,11 @@ const HomePage = () => {
         <h1 className="title">Bộ lọc</h1>
         <div className="filter-container">
           <div className="filter-item">
-            <select defaultValue="">
-              <option value="" disabled>
-                Thành phố
-              </option>
-              <option value="ha-noi">Hà Nội</option>
-              <option value="ho-chi-minh">Hồ Chí Minh</option>
-              <option value="da-nang">Đà Nẵng</option>
-              <option value="can-tho">Cần Thơ</option>
-              <option value="hai-phong">Hải Phòng</option>
-            </select>
-          </div>
-          <div className="filter-item">
-            <select defaultValue="">
+            <select
+              defaultValue=""
+              value={filters.type}
+              onChange={(e) => handleFilterChange(e, 'type')}
+            >
               <option value="" disabled>
                 Loại phòng
               </option>
@@ -105,7 +123,11 @@ const HomePage = () => {
             </select>
           </div>
           <div className="filter-item">
-            <select defaultValue="">
+            <select
+              defaultValue=""
+              value={filters.price}
+              onChange={(e) => handleFilterChange(e, 'price')}
+            >
               <option value="" disabled>
                 Mức giá
               </option>
@@ -117,7 +139,11 @@ const HomePage = () => {
             </select>
           </div>
           <div className="filter-item">
-            <select defaultValue="">
+            <select
+              defaultValue=""
+              value={filters.acreage}
+              onChange={(e) => handleFilterChange(e, 'acreage')}
+            >
               <option value="" disabled>
                 Diện tích
               </option>
@@ -127,7 +153,9 @@ const HomePage = () => {
               <option value="50+">Trên 50m²</option>
             </select>
           </div>
-          <button className="search-button">Tìm kiếm</button>
+          <button className="search-button" onClick={handleSearch}>
+            Tìm kiếm
+          </button>
         </div>
       </div>
 
@@ -162,7 +190,7 @@ const HomePage = () => {
           ))}
         </Swiper>
         <button className="btn-all">
-          Xem tất cả
+          <Link to="/rooms?type=nha-nguyen-can">Xem tất cả</Link>
           <ArrowRightOutlined />
         </button>
       </div>
@@ -203,7 +231,7 @@ const HomePage = () => {
           ))}
         </Swiper>
         <button className="btn-all">
-          Xem tất cả
+          <Link to="/rooms?type=can-ho">Xem tất cả</Link>
           <ArrowRightOutlined />
         </button>
       </div>
@@ -238,7 +266,7 @@ const HomePage = () => {
           ))}
         </Swiper>
         <button className="btn-all">
-          Xem tất cả
+          <Link to="/rooms?type=phong-tro">Xem tất cả</Link>
           <ArrowRightOutlined />
         </button>
       </div>

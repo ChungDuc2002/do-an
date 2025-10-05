@@ -19,13 +19,13 @@ const ToastProvider = ({ children }) => {
             padding: '7px 20px',
           },
           success: {
-            duration: 4000,
+            duration: 2000,
             style: {
               background: '#4CAF50',
             },
           },
           error: {
-            duration: 4000,
+            duration: 2000,
             style: {
               background: '#ebc8c4',
               color: '#EE4E4E',
