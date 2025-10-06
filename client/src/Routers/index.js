@@ -3,6 +3,7 @@ import HomePage from '../Pages/Home';
 import NotFound from '../Pages/NotFound';
 import Login from '../Pages/Login';
 import Register from '../Pages/Register';
+import ForgotPassword from '../Pages/ForgotPassword';
 import ProfilePage from '../Pages/Profile';
 import RoomsPage from '../Pages/Rooms';
 import SearchPage from '../Pages/Search';
@@ -81,6 +82,10 @@ const InitRouters = [
   {
     path: '/register',
     element: <Register />,
+  },
+  {
+    path: '/forgot-password',
+    element: <ForgotPassword />,
   },
   {
     path: '/test',

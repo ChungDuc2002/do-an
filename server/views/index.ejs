@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Forgot-Password</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500&display=swap"
+    />
+    <style>
+      body {
+        font-family: 'Poppins', sans-serif;
+        width: 35%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+      h1 {
+        width: 100%;
+        color: #000;
+        font-size: 1.4rem;
+        font-weight: 400;
+        text-transform: uppercase;
+        position: relative;
+        text-align: center;
+      }
+      h1 > span {
+        color: gray;
+        text-transform: initial;
+        font-size: 1.1rem;
+        display: block;
+      }
+      .error-message {
+        color: red;
+        text-align: center;
+        font-size: 1rem;
+        display: none;
+      }
+      input {
+        font-size: 1rem;
+        color: #000;
+        width: 80%;
+        height: 50px;
+        outline: none !important;
+        background-color: transparent;
+        box-shadow: none;
+        border: 1px solid #b1a6a6 !important;
+        border-radius: 5px;
+        padding: 0 5px;
+        display: block;
+        margin: 0 auto 10px auto;
+      }
+      input::placeholder {
+        color: #828282;
+        font-size: 0.9rem;
+      }
+      button {
+        width: 82%;
+        height: 40px;
+        text-transform: uppercase;
+        background-color: #000;
+        border: 1px solid black;
+        color: #fff;
+        border-radius: 5px;
+        display: block;
+        margin: 0 auto;
+      }
+      button:hover {
+        cursor: pointer;
+        background-color: gray !important;
+        border: none;
+      }
+      @media screen and (max-width: 375px) {
+        body {
+          width: 95%;
+          margin: 0px;
+        }
+        button {
+          width: 84%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>cấp lại mật khẩu cho Email <span><%=email%></span></h1>
+    <form action="" method="post">
+      <p id="password-error" class="error-message">
+        Mật khẩu và xác nhận mật khẩu không khớp !
+      </p>
+      <input
+        type="password"
+        type="password"
+        name="password"
+        id="password"
+        placeholder="Password"
+      />
+      <input
+        type="password"
+        type="confirm-password"
+        name="confirm-password"
+        id="confirm-password"
+        placeholder="Confirm Password"
+      />
+      <button type="submit" value="submit">Xác nhận</button>
+    </form>
+  </body>
+  <script>
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirm-password');
+    const passwordError = document.getElementById('password-error');
+
+    function checkPasswords() {
+      const password = passwordInput.value;
+      const confirmPassword = confirmPasswordInput.value;
+
+      if (password !== confirmPassword) {
+        passwordError.style.display = 'block';
+      } else {
+        passwordError.style.display = 'none';
+      }
+    }
+    confirmPasswordInput.addEventListener('input', checkPasswords);
+
+    var status = '<%- JSON.stringify(status) %>';
+    if (JSON.parse(status) == 'Verified') {
+      if (confirm('Do you want to login ?')) {
+        window.location.href = 'http://localhost:3000/login';
+      }
+    }
+  </script>
+</html>

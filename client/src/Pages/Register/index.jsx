@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Button, Form, Input, Image } from 'antd';
+import logo_web from '../../Assets/logo_page.png';
 import logo_school from '../../Assets/logo_school.png';
 import './style.scss';
 
@@ -26,7 +27,7 @@ const RegisterPage = () => {
   return (
     <div className="wrapper-auth">
       <div className="header-login">
-        <h1>Phongtro123.com</h1>
+        <img src={logo_web} alt="" style={{ width: '250px' }} />
       </div>
       <div className="wrapper-auth-form">
         <Form

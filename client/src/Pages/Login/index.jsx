@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Button, Form, Input, Image } from 'antd';
 import ErrorMessageIcon from './../../Components/Icons/ErrorMessageIcon';
 import logo_school from '../../Assets/logo_school.png';
+import logo_web from '../../Assets/logo_page.png';
 import './style.scss';
 
 const LoginPage = () => {
@@ -42,7 +43,7 @@ const LoginPage = () => {
   return (
     <div className="wrapper-auth">
       <div className="header-login">
-        <h1>phongtro123.com</h1>
+        <img src={logo_web} alt="" style={{ width: '250px' }} />
       </div>
       <div className="wrapper-auth-form">
         <Form

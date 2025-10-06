@@ -21,6 +21,10 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
 
+//! lấy lại mật khẩu cho email
+app.set('view engine', 'ejs');
+app.use(express.urlencoded({ extended: false }));
+
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 InitRouters(app);

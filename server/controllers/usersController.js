@@ -1,7 +1,107 @@
 import users from '../models/users.js';
 import bcrypt from 'bcrypt';
+import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
 
+// Logic Reset Password ---------------------------------
+export async function forgotPassword(req, res) {
+  try {
+    const { email } = req.body;
+    const oldUser = await users.findOne({ email });
+    if (!oldUser) {
+      return res.status(404).json({ message: 'User Not Exists!' });
+    }
+    const secret = process.env.JWT_ACCESS_KEY + oldUser.password;
+    const token = jwt.sign({ email: oldUser.email, id: oldUser._id }, secret, {
+      expiresIn: '30m',
+    });
+
+    const link = `http://localhost:5000/reset-password/${oldUser._id}/${token}`;
+
+    var transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'nguyenchungduc2002@gmail.com',
+        pass: 'vphkbllyoiythqod',
+      },
+    });
+
+    var mailOptions = {
+      from: 'youremail@gmail.com',
+      to: email,
+      subject: 'Password Reset',
+      priority: 'high',
+      html: `
+      <h1 style="opacity:0.8 ; color: orange;font-family: 'Poppins', sans-serif; font-weight: 500; ">Welcome to Tromoi.com</h1>
+      <h2 style="color:#333 ;font-family: 'Poppins', sans-serif; font-weight: 500;">Được biết bạn có yêu cầu khôi phục lại mật khẩu đã bị mất . Chúng tôi đã gửi cho bạn một liên kết ở phía dưới ...</h2>
+      <h3 style="font-family: 'Poppins', sans-serif; font-weight: 500;">Vui lòng Click <a href="${link}">vào đây</a> để khôi phục lại mật khẩu.</h3>
+      <h4 style="font-family: 'Poppins', sans-serif; font-weight: 500;">Lưu ý : Link khôi phục chỉ tồn tại trong vòng 3p .</h4>
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS0h9CGRHNCU421t_qoLQuvyrduVBCOqap42A&s" alt="Image"/>
+      <p style="font-size:15px ;font-family: 'Poppins', sans-serif; font-weight: 500;">Cảm ơn bạn vì đã tin tưởng sử dụng dịch vụ của chúng tôi . Thank !</p>
+      `,
+    };
+
+    transporter.sendMail(mailOptions, function (err, info) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log('Email sent :' + info.response);
+      }
+    });
+    console.log(link);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+
+export async function resetPassword(req, res) {
+  const { id, token } = req.params;
+  console.log(req.params);
+  const oldUser = await users.findOne({ _id: id });
+  console.log(oldUser);
+
+  if (!oldUser) {
+    return res.status(404).json('User Not Exits');
+  }
+  const secret = process.env.JWT_ACCESS_KEY + oldUser.password;
+  console.log(secret);
+
+  try {
+    const verify = jwt.verify(token, secret);
+    return res.render('index', { email: verify.email, status: 'Not Verified' });
+  } catch (error) {
+    console.error('JWT verify error:', error);
+    return res.status(500).json('Not Verified');
+  }
+}
+
+export async function postResetPassword(req, res) {
+  const { id, token } = req.params;
+  const { password } = req.body;
+  const oldUser = await users.findOne({ _id: id });
+  if (!oldUser) {
+    return res.status(404).json('User Not Exits');
+  }
+  const secret = process.env.JWT_ACCESS_KEY + oldUser.password;
+  try {
+    const verify = jwt.verify(token, secret);
+    const encryptedPassword = await bcrypt.hash(password, 10);
+    await users.updateOne(
+      {
+        _id: id,
+      },
+      {
+        $set: {
+          password: encryptedPassword,
+        },
+      }
+    );
+    return res.render('index', { email: verify.email, status: 'Verified' });
+  } catch (error) {
+    return res.status(500).json('Something Went Wrong');
+  }
+}
+// ------------------------------
 export async function info(req, res) {
   try {
     const user = await users.findById(req.user.id);
