@@ -200,10 +200,9 @@ export async function getAllRooms(req, res) {
 export async function getRoomById(req, res) {
   try {
     const { id } = req.params;
-    const room = await rooms
-      .findById(id)
-      .populate('owner', 'fullName email phone')
-      .populate('currentTenant', 'fullName');
+    const room = await rooms.findById(id);
+    // .populate('owner', 'fullName email phone')
+    // .populate('currentTenant', 'fullName');
 
     if (!room) {
       return res.status(404).json({ message: 'Không tìm thấy phòng' });

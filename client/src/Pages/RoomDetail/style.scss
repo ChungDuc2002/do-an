@@ -70,6 +70,7 @@
       font-size: 20px;
       color: #1890ff;
       margin-bottom: 16px;
+      font-weight: 400;
     }
 
     .price-section {
@@ -110,6 +111,20 @@
         .ant-tag {
           padding: 4px 12px;
           font-size: 14px;
+        }
+      }
+    }
+    .btn {
+      button {
+        padding: 5px 15px;
+        border-radius: 10px;
+        border: 1px solid #1890ff;
+        font-size: 16px;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        &:hover {
+          cursor: pointer;
+          scale: 1.1;
         }
       }
     }

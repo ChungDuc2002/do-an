@@ -1,0 +1,84 @@
+.wrapper-payment {
+  padding: 24px;
+  min-height: 100vh;
+  padding-top: 100px;
+  background: #f0f2f5;
+
+  .payment-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+
+    .room-info {
+      .ant-card {
+        width: 100% !important;
+        height: 100%;
+        padding: 5px 10px;
+        .ant-card-head-title {
+          text-transform: uppercase;
+          text-align: center;
+          font-size: 17px;
+          font-weight: 500;
+        }
+        .group {
+          padding: 5px 10px;
+          .main-image {
+            // height: 200px;
+          }
+          h2 {
+            color: #1890ff;
+            font-size: 17px;
+            margin-bottom: 16px;
+            font-weight: 400;
+            text-transform: uppercase;
+          }
+          p {
+            font-size: 16px;
+            margin-bottom: 8px;
+          }
+        }
+      }
+    }
+
+    .customer-info {
+      .ant-card {
+        width: 100% !important;
+        padding: 5px 10px;
+        .ant-card-head-title {
+          text-transform: uppercase;
+          text-align: center;
+          font-weight: 500;
+          font-size: 17px;
+        }
+        p {
+          font-size: 16px;
+          margin-bottom: 8px;
+        }
+        button {
+          display: block;
+          margin: 0 auto;
+          padding: 5px 15px;
+          border: 1px solid black;
+          border-radius: 10px;
+          text-transform: capitalize;
+          &:hover {
+            cursor: pointer;
+            scale: 1.1;
+          }
+        }
+      }
+
+      .ant-form-item {
+        margin-bottom: 16px;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .payment-content {
+    grid-template-columns: 1fr !important;
+  }
+}

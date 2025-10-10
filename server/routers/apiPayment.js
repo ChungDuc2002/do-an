@@ -8,8 +8,8 @@ import * as paymentController from '../controllers/paymentController.js';
 
 apiPayments.post('/create-payment', paymentController.createPaymentLink);
 
-apiPayments.post('/reactivate-payment', paymentController.reactivatePayment);
+// apiPayments.post('/reactivate-payment', paymentController.reactivatePayment);
 
-apiPayments.post('/payment-success', paymentController.paymentSuccess);
+// apiPayments.post('/payment-success', paymentController.paymentSuccess);
 
 export default apiPayments;

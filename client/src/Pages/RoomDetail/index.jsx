@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import { Tag, Spin, Image } from 'antd';
+import { Tag, Spin, Image, Divider } from 'antd';
 import StoreLocationIcon from '../../Components/Icons/StoreLocationIcon';
 import {
   DollarOutlined,
@@ -9,12 +9,14 @@ import {
   HarmonyOSOutlined,
 } from '@ant-design/icons';
 import moment from 'moment';
+import { useNavigate } from 'react-router-dom';
 import './style.scss';
 
 const RoomDetail = () => {
   const { id } = useParams();
   const [room, setRoom] = useState([]);
   const [loading, setLoading] = useState(true); // Thêm loading state
+  const navigate = useNavigate();
 
   useEffect(() => {
     document.title = 'Chi tiết phòng';
@@ -27,6 +29,7 @@ const RoomDetail = () => {
           `http://localhost:5000/room/getRoomById/${id}`
         );
         setRoom(response.data);
+        console.log(response.data);
       } catch (error) {
         console.error('Error fetching product:', error);
       } finally {
@@ -36,6 +39,10 @@ const RoomDetail = () => {
 
     fetchProduct();
   }, [id]);
+
+  const handleDeposit = () => {
+    navigate(`/payment/${room._id}`);
+  };
 
   if (loading)
     return (
@@ -158,6 +165,10 @@ const RoomDetail = () => {
               </Tag>
             ))}
           </div>
+        </div>
+        <Divider />
+        <div className="btn">
+          <button onClick={handleDeposit}>Đặt cọc phòng</button>
         </div>
       </div>
     </div>

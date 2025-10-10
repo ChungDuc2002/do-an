@@ -12,28 +12,25 @@ const RegisterPage = () => {
   }, []);
   const navigate = useNavigate();
 
-  //   const onFinish = async (values) => {
-  //     try {
-  //       const res = await axios.post('http://localhost:5000/register', values);
-  //       if (res.status === 200) {
-  //         const token = res.data;
-  //         localStorage.setItem('auth', JSON.stringify(token));
-  //         navigate('/login');
-  //       }
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   };
+  const onFinish = async (values) => {
+    try {
+      const res = await axios.post('http://localhost:5000/register', values);
+      if (res.status === 200) {
+        const token = res.data;
+        localStorage.setItem('authSon', JSON.stringify(token));
+      }
+      navigate('/login');
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <div className="wrapper-auth">
       <div className="header-login">
         <img src={logo_web} alt="" style={{ width: '250px' }} />
       </div>
       <div className="wrapper-auth-form">
-        <Form
-          className="form"
-          //</div> onFinish={onFinish}
-        >
+        <Form className="form" onFinish={onFinish}>
           <div className="header-logo">
             <div className="logo">
               <Image preview={false} src={logo_school} />

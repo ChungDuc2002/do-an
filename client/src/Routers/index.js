@@ -6,6 +6,7 @@ import Register from '../Pages/Register';
 import ForgotPassword from '../Pages/ForgotPassword';
 import ProfilePage from '../Pages/Profile';
 import RoomsPage from '../Pages/Rooms';
+import PaymentPage from '../Pages/Payment';
 import SearchPage from '../Pages/Search';
 import InformationProfile from '../Pages/Profile/information';
 import InfoRooms from '../Pages/Profile/rooms';
@@ -54,6 +55,10 @@ const InitRouters = [
       {
         path: '/search',
         element: <SearchPage />,
+      },
+      {
+        path: '/payment/:id',
+        element: <PaymentPage />,
       },
     ],
   },

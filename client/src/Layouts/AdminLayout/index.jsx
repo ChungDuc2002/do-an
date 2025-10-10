@@ -47,17 +47,17 @@ const AdminLayout = () => {
         },
       ],
     },
-    {
-      key: 'sub3',
-      label: 'Chat Box',
-      icon: <WechatWorkOutlined />,
-      children: [
-        {
-          key: '/admin/chat',
-          label: 'Chat Box',
-        },
-      ],
-    },
+    // {
+    //   key: 'sub3',
+    //   label: 'Chat Box',
+    //   icon: <WechatWorkOutlined />,
+    //   children: [
+    //     {
+    //       key: '/admin/chat',
+    //       label: 'Chat Box',
+    //     },
+    //   ],
+    // },
     {
       key: 'sub1',
       label: 'Trang chủ',
@@ -112,18 +112,6 @@ const AdminLayout = () => {
         {
           key: '/admin/manager-rooms',
           label: 'Quản lý phòng',
-        },
-        {
-          key: '/admin/manager-fashion',
-          label: 'Thời Trang',
-        },
-        {
-          key: '/admin/manager-electronics',
-          label: 'Đồ Điện Tử',
-        },
-        {
-          key: '/admin/manager-books',
-          label: 'Sách Văn Phòng Phẩm',
         },
       ],
     },

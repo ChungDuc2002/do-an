@@ -48,7 +48,6 @@ const HeaderClient = () => {
         const response = await axios.get(
           `http://localhost:5000/favorite/getFavorites/${userId}`
         );
-        console.log('aaaa', response.data);
 
         setFavoriteCount(response.data.length);
       } catch (error) {
