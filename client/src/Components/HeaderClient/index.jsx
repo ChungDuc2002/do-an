@@ -133,7 +133,7 @@ const HeaderClient = () => {
               <Link to="/rooms?type=can-ho">Căn hộ</Link>
             </li>
             <li>
-              <Link to="">Blog</Link>
+              <Link to="/contact">Liên hệ</Link>
             </li>
           </ul>
         </div>

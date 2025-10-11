@@ -6,6 +6,7 @@ import Register from '../Pages/Register';
 import ForgotPassword from '../Pages/ForgotPassword';
 import ProfilePage from '../Pages/Profile';
 import RoomsPage from '../Pages/Rooms';
+import ContactPage from '../Pages/Contact';
 import PaymentPage from '../Pages/Payment';
 import PaymentSuccess from '../Pages/PaymentSuccess';
 import PaymentCancel from '../Pages/PaymentCancel';
@@ -19,9 +20,8 @@ import ManagerUsers from '../Pages/Admin/ManagerUsers';
 import CreateRoomPage from './../Pages/Admin/Rooms/CreateRooms';
 import ManagerRoomPage from '../Pages/Admin/Rooms/ManagerRooms';
 import ManagerBookedRooms from '../Pages/Admin/Rooms/ManagerBookedRooms';
-
-import CardPage from '../Components/Card';
 import StatisticalPage from '../Pages/Admin/Statistical';
+import ManagerContact from './../Pages/Admin/Trang-Chu/ManagerConntact/index';
 
 const InitRouters = [
   {
@@ -72,6 +72,10 @@ const InitRouters = [
         path: '/payment/cancel',
         element: <PaymentCancel />,
       },
+      {
+        path: '/contact',
+        element: <ContactPage />,
+      },
     ],
   },
   {
@@ -98,6 +102,10 @@ const InitRouters = [
         path: '/admin/manager-booked-rooms',
         element: <ManagerBookedRooms />,
       },
+      {
+        path: '/admin/manager-contact',
+        element: <ManagerContact />,
+      },
     ],
   },
   {
@@ -111,10 +119,6 @@ const InitRouters = [
   {
     path: '/forgot-password',
     element: <ForgotPassword />,
-  },
-  {
-    path: '/test',
-    element: <CardPage />,
   },
   {
     path: '*',
