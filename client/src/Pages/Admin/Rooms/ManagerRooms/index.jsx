@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Card,
   Row,
@@ -46,30 +46,34 @@ const ManagerRoomPage = () => {
   const [editingRoom, setEditingRoom] = useState(null);
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
+  const [rulesFileList, setRulesFileList] = useState([]);
 
   // Fetch rooms data
-  const fetchRooms = async (params = {}) => {
-    try {
-      setLoading(true);
-      const response = await axios.get(
-        'http://localhost:5000/room/getAllRooms',
-        {
-          params: {
-            page: currentPage,
-            limit: 3,
-            ...params,
-          },
-        }
-      );
-      setRooms(response.data.docs);
-      setTotalRooms(response.data.totalDocs);
-    } catch (error) {
-      message.error('Lỗi khi tải danh sách phòng');
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const fetchRooms = useCallback(
+    async (params = {}) => {
+      try {
+        setLoading(true);
+        const response = await axios.get(
+          'http://localhost:5000/room/getAllRooms',
+          {
+            params: {
+              page: currentPage,
+              limit: 3,
+              ...params,
+            },
+          }
+        );
+        setRooms(response.data.docs);
+        setTotalRooms(response.data.totalDocs);
+      } catch (error) {
+        message.error('Lỗi khi tải danh sách phòng');
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [currentPage]
+  );
 
   // Search rooms with filters
   const handleFilter = async () => {
@@ -186,7 +190,42 @@ const ManagerRoomPage = () => {
           response: img,
         })) || [];
 
+      // Set current rules images - handle both string and array
+      let currentRulesImages = [];
+
+      if (room.rules) {
+        if (typeof room.rules === 'string') {
+          // Single rules image (string format)
+          currentRulesImages = [
+            {
+              uid: '-rules-1',
+              name: 'rules.jpg',
+              status: 'done',
+              url: room.rules.startsWith('http')
+                ? room.rules
+                : `http://localhost:5000${room.rules}`,
+              response: room.rules,
+            },
+          ];
+        } else if (Array.isArray(room.rules) && room.rules.length > 0) {
+          // Multiple rules images (array format) - take first one
+          const rulesImage = room.rules[0];
+          currentRulesImages = [
+            {
+              uid: '-rules-1',
+              name: 'rules.jpg',
+              status: 'done',
+              url: rulesImage.startsWith('http')
+                ? rulesImage
+                : `http://localhost:5000${rulesImage}`,
+              response: rulesImage,
+            },
+          ];
+        }
+      }
+
       setFileList(currentImages);
+      setRulesFileList(currentRulesImages);
       setEditModalVisible(true);
     }
   };
@@ -194,6 +233,8 @@ const ManagerRoomPage = () => {
   // Xử lý submit form chỉnh sửa
   const handleEditSubmit = async (values) => {
     try {
+      console.log('Rules file list:', rulesFileList);
+      console.log('Editing room:', editingRoom);
       const formData = new FormData();
 
       // Append form data
@@ -218,12 +259,70 @@ const ManagerRoomPage = () => {
       // Append amenities
       formData.append('amenities', JSON.stringify(values.amenities || []));
 
-      // Append new images
+      // Handle images - separate existing and new images
+      const existingImages = [];
+      const newImages = [];
+
       fileList.forEach((file) => {
         if (file.originFileObj) {
-          formData.append('images', file.originFileObj);
+          // New image file
+          newImages.push(file.originFileObj);
+        } else if (file.response) {
+          // Existing image (from server)
+          existingImages.push(file.response);
+        } else if (file.url) {
+          // Existing image (fallback)
+          const imagePath = file.url.replace('http://localhost:5000', '');
+          existingImages.push(imagePath);
         }
       });
+
+      // Send existing images as JSON array
+      formData.append('existingImages', JSON.stringify(existingImages));
+
+      // Send new image files
+      newImages.forEach((imageFile) => {
+        formData.append('images', imageFile);
+      });
+
+      // Handle rules image - similar logic to regular images
+      const existingRulesImages = [];
+      const newRulesImages = [];
+
+      rulesFileList.forEach((file) => {
+        if (file.originFileObj) {
+          // New rules image file
+          newRulesImages.push(file.originFileObj);
+        } else if (file.response) {
+          // Existing rules image (from server)
+          existingRulesImages.push(file.response);
+        } else if (file.url) {
+          // Existing rules image (fallback)
+          const rulesImagePath = file.url.replace('http://localhost:5000', '');
+          existingRulesImages.push(rulesImagePath);
+        }
+      });
+
+      // Handle rules image upload
+      if (rulesFileList.length > 0) {
+        // Send existing rules images as JSON array (using 'existingRules' field)
+        if (existingRulesImages.length > 0) {
+          formData.append('existingRules', JSON.stringify(existingRulesImages));
+        }
+
+        // Send new rules image files (using 'rules' field)
+        newRulesImages.forEach((imageFile) => {
+          formData.append('rules', imageFile);
+        });
+      } else {
+        // No rules image, send empty value
+        formData.append('existingRules', JSON.stringify([]));
+      }
+
+      console.log('FormData contents:');
+      for (let [key, value] of formData.entries()) {
+        console.log(key, value);
+      }
 
       await axios.put(
         `http://localhost:5000/room/updateRoom/${editingRoom._id}`,
@@ -240,16 +339,28 @@ const ManagerRoomPage = () => {
       setEditingRoom(null);
       form.resetFields();
       setFileList([]);
+      setRulesFileList([]);
       fetchRooms({ page: currentPage });
     } catch (error) {
-      message.error('Lỗi khi cập nhật phòng: ' + error.message);
-      console.error('Update error:', error);
+      console.error('Full error object:', error);
+      console.error('Error response:', error.response?.data);
+      const errorMessage =
+        error.response?.data?.message || error.message || 'Lỗi không xác định';
+      message.error('Lỗi khi cập nhật phòng: ' + errorMessage);
     }
   };
 
   // Xử lý upload hình ảnh
   const handleImageChange = ({ fileList: newFileList }) => {
     setFileList(newFileList);
+  };
+
+  // Xử lý upload hình ảnh nội quy
+  const handleRulesImageChange = ({ fileList: newFileList }) => {
+    // Chỉ cho phép 1 hình ảnh nội quy
+    if (newFileList.length <= 1) {
+      setRulesFileList(newFileList);
+    }
   };
 
   // Xử lý preview hình ảnh
@@ -274,6 +385,7 @@ const ManagerRoomPage = () => {
     setEditingRoom(null);
     form.resetFields();
     setFileList([]);
+    setRulesFileList([]);
   };
 
   // Initial fetch
@@ -282,7 +394,7 @@ const ManagerRoomPage = () => {
       await fetchRooms();
     };
     loadRooms();
-  }, []);
+  }, [fetchRooms]);
 
   return (
     <div className="wrapper-manager-rooms">
@@ -529,6 +641,29 @@ const ManagerRoomPage = () => {
                 rules={[{ required: true, message: 'Vui lòng nhập mô tả' }]}
               >
                 <Input.TextArea rows={3} placeholder="Nhập mô tả phòng" />
+              </Form.Item>
+            </Col>
+
+            <Col span={24}>
+              <Form.Item label="Hình ảnh nội quy phòng">
+                <Upload
+                  listType="picture-card"
+                  fileList={rulesFileList}
+                  onChange={handleRulesImageChange}
+                  onPreview={handlePreview}
+                  beforeUpload={() => false}
+                  maxCount={1}
+                >
+                  {rulesFileList.length >= 1 ? null : (
+                    <div>
+                      <PlusOutlined />
+                      <div style={{ marginTop: 8 }}>Tải ảnh nội quy</div>
+                    </div>
+                  )}
+                </Upload>
+                <div style={{ marginTop: 8, color: '#666', fontSize: '12px' }}>
+                  * Chỉ cho phép tải lên 1 hình ảnh nội quy
+                </div>
               </Form.Item>
             </Col>
 

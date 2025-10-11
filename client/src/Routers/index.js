@@ -21,6 +21,7 @@ import ManagerRoomPage from '../Pages/Admin/Rooms/ManagerRooms';
 import ManagerBookedRooms from '../Pages/Admin/Rooms/ManagerBookedRooms';
 
 import CardPage from '../Components/Card';
+import StatisticalPage from '../Pages/Admin/Statistical';
 
 const InitRouters = [
   {
@@ -77,6 +78,10 @@ const InitRouters = [
     path: '/admin',
     element: <AdminLayout />,
     children: [
+      {
+        path: '/admin',
+        element: <StatisticalPage />,
+      },
       {
         path: '/admin/manager-users',
         element: <ManagerUsers />,

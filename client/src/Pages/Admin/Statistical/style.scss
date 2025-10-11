@@ -1,0 +1,270 @@
+@import '../../../Styles/variable.scss';
+
+.statistical-page {
+  padding: 24px;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+
+  .statistical-header {
+    margin-bottom: 24px;
+    text-align: center;
+
+    h2 {
+      color: $primary-color;
+      margin-bottom: 8px;
+    }
+  }
+
+  .statistical-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 400px;
+    gap: 16px;
+
+    .ant-spin {
+      margin-bottom: 16px;
+    }
+
+    div {
+      font-size: 16px;
+      color: #666;
+    }
+  }
+
+  .overview-cards {
+    margin-bottom: 24px;
+
+    .ant-card {
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+      }
+
+      .ant-statistic {
+        .ant-statistic-title {
+          font-weight: 600;
+          font-size: 14px;
+          color: #666;
+        }
+
+        .ant-statistic-content {
+          .ant-statistic-content-value {
+            font-size: 32px;
+            font-weight: 700;
+          }
+
+          .ant-statistic-content-prefix {
+            font-size: 24px;
+            margin-right: 8px;
+          }
+        }
+      }
+    }
+  }
+
+  .charts-section {
+    margin-bottom: 24px;
+
+    .ant-card {
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      height: 100%;
+      width: 100% !important;
+
+      .ant-card-head {
+        border-bottom: 2px solid #f0f0f0;
+
+        .ant-card-head-title {
+          font-weight: 600;
+          font-size: 16px;
+          color: $primary-color;
+
+          .anticon {
+            margin-right: 8px;
+            // color: $accent-color;
+          }
+        }
+      }
+
+      .chart-container {
+        height: 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+
+        canvas {
+          max-height: 280px;
+          width: 100% !important;
+        }
+      }
+    }
+  }
+
+  .detail-tables {
+    .ant-card {
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      height: 100%;
+      width: 100% !important;
+      padding: 5px;
+
+      .ant-card-head {
+        border-bottom: 2px solid #f0f0f0;
+
+        .ant-card-head-title {
+          font-weight: 600;
+          font-size: 16px;
+          color: $primary-color;
+        }
+      }
+
+      .room-type-details,
+      .room-area-details {
+        .room-type-item,
+        .room-area-item {
+          padding: 12px 0;
+          border-bottom: 1px solid #f0f0f0;
+
+          &:last-child {
+            border-bottom: none;
+          }
+
+          .room-type-header,
+          .room-area-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+
+            .ant-tag {
+              font-weight: 600;
+            }
+          }
+
+          .room-type-info,
+          .room-area-info {
+            font-size: 12px;
+            color: #999;
+          }
+        }
+      }
+    }
+  }
+
+  .ant-divider {
+    margin: 32px 0;
+    border-color: #e8e8e8;
+  }
+
+  // Responsive Design
+  @media (max-width: 768px) {
+    padding: 16px;
+
+    .statistical-header {
+      margin-bottom: 16px;
+
+      h2 {
+        font-size: 24px;
+      }
+    }
+
+    .overview-cards {
+      margin-bottom: 16px;
+    }
+
+    .charts-section {
+      margin-bottom: 16px;
+
+      .chart-container {
+        height: 250px;
+
+        canvas {
+          max-height: 230px;
+        }
+      }
+    }
+
+    .ant-divider {
+      margin: 24px 0;
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px;
+
+    .statistical-header {
+      h2 {
+        font-size: 20px;
+      }
+    }
+
+    .overview-cards {
+      .ant-card {
+        width: 100% !important;
+        .ant-statistic {
+          .ant-statistic-content {
+            .ant-statistic-content-value {
+              font-size: 24px;
+            }
+
+            .ant-statistic-content-prefix {
+              font-size: 20px;
+            }
+          }
+        }
+      }
+    }
+
+    .charts-section {
+      .chart-container {
+        height: 200px;
+
+        canvas {
+          max-height: 180px;
+        }
+      }
+    }
+  }
+}
+
+// Animation cho loading
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.statistical-page {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+// Hover effects cho cards
+.overview-cards {
+  .ant-card:hover {
+    .ant-statistic-content-value {
+      color: $primary-color !important;
+      transition: color 0.3s ease;
+    }
+  }
+}
+
+// Custom colors cho chart legends
+.charts-section {
+  .ant-card {
+    .ant-card-body {
+      padding: 24px 20px;
+    }
+  }
+}

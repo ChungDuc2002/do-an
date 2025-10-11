@@ -88,6 +88,12 @@ const InfoRooms = () => {
     return new Date(date).toLocaleString('vi-VN');
   };
 
+  // Tính số tiền còn cần thanh toán
+  const calculateRemainingAmount = (roomPrice, depositAmount) => {
+    const remaining = roomPrice - depositAmount;
+    return remaining > 0 ? remaining : 0;
+  };
+
   const getRoomTypeText = (type) => {
     switch (type) {
       case 'nha-nguyen-can':
@@ -206,13 +212,19 @@ const InfoRooms = () => {
               </span>
             </div>
             <div className="stat-item">
-              <span className="stat-label">Đã xác nhận:</span>
+              <span className="stat-label">Còn thiếu:</span>
               <span className="stat-value">
-                {
-                  bookedRooms.filter(
-                    (room) => room.status_payRoom === 'Confirm'
-                  ).length
-                }
+                {formatPrice(
+                  bookedRooms.reduce(
+                    (total, room) =>
+                      total +
+                      calculateRemainingAmount(
+                        room.roomInfo.price,
+                        room.depositAmount
+                      ),
+                    0
+                  )
+                )}
               </span>
             </div>
           </div>
@@ -298,6 +310,17 @@ const InfoRooms = () => {
                     <span className="label">Tiền cọc:</span>
                     <span className="deposit-price">
                       {formatPrice(booking.depositAmount)}
+                    </span>
+                  </div>
+                  <div className="price-row">
+                    <span className="label">Còn thiếu:</span>
+                    <span className="remaining-price">
+                      {formatPrice(
+                        calculateRemainingAmount(
+                          booking.roomInfo.price,
+                          booking.depositAmount
+                        )
+                      )}
                     </span>
                   </div>
                 </div>

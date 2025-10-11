@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Space, Tag, Button } from 'antd';
-import { HeartFilled, HeartOutlined } from '@ant-design/icons';
+import { EyeOutlined, HeartFilled, HeartOutlined } from '@ant-design/icons';
 import Meta from 'antd/es/card/Meta';
 import StoreLocationIcon from './../Icons/StoreLocationIcon';
 import { useNavigate } from 'react-router-dom';
@@ -141,6 +141,13 @@ const CardPage = ({ rooms }) => {
   const roomStatus = rooms.status || 'available';
   const statusInfo = getRoomStatusInfo(roomStatus);
 
+  const formatViews = (views) => {
+    if (views >= 1000) {
+      return `${(views / 1000).toFixed(1)}k`;
+    }
+    return views;
+  };
+
   return (
     <Card
       hoverable={statusInfo.canBook}
@@ -159,6 +166,10 @@ const CardPage = ({ rooms }) => {
               e.target.src = 'https://placehold.co/600x400?text=No+Image';
             }}
           />
+          <div className="views-badge">
+            <EyeOutlined />
+            <span>{formatViews(rooms.views)}</span>
+          </div>
           <div className={`status-overlay status-${roomStatus}`}>
             <Tag color={statusInfo.color} className="status-tag">
               {statusInfo.text}

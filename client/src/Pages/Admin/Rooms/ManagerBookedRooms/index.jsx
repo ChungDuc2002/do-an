@@ -305,13 +305,15 @@ const ManagerBookedRooms = () => {
         visible={detailModalVisible}
         onCancel={() => setDetailModalVisible(false)}
         footer={null}
-        width={800}
+        width={900}
       >
         {selectedRoom && (
-          <Descriptions bordered column={2}>
+          <Descriptions bordered column={2} size="middle">
             <Descriptions.Item label="Mã đơn hàng" span={2}>
               <Badge status="processing" text={selectedRoom.orderCode} />
             </Descriptions.Item>
+
+            {/* Thông tin khách hàng */}
             <Descriptions.Item label="Khách hàng">
               {selectedRoom.userId?.fullName}
             </Descriptions.Item>
@@ -324,11 +326,51 @@ const ManagerBookedRooms = () => {
             <Descriptions.Item label="Trạng thái">
               {getStatusTag(selectedRoom.status_payRoom)}
             </Descriptions.Item>
-            <Descriptions.Item label="Tổng tiền" span={2}>
-              <Text strong style={{ color: '#52c41a' }}>
+
+            {/* Thông tin phòng */}
+            <Descriptions.Item label="Tên phòng" span={2}>
+              <Text strong style={{ color: '#1890ff' }}>
+                {selectedRoom.rooms[0]?.roomId?.title}
+              </Text>
+            </Descriptions.Item>
+            <Descriptions.Item label="Địa chỉ phòng" span={2}>
+              <Text>
+                {selectedRoom.rooms[0]?.roomId?.address?.street},{' '}
+                {selectedRoom.rooms[0]?.roomId?.address?.ward},{' '}
+                {selectedRoom.rooms[0]?.roomId?.address?.district},{' '}
+                {selectedRoom.rooms[0]?.roomId?.address?.city}
+              </Text>
+            </Descriptions.Item>
+            <Descriptions.Item label="Giá phòng">
+              <Text>
+                {formatPrice(selectedRoom.rooms[0]?.roomId?.price)} VNĐ/tháng
+              </Text>
+            </Descriptions.Item>
+            <Descriptions.Item label="Diện tích">
+              <Text>{selectedRoom.rooms[0]?.roomId?.acreage} m²</Text>
+            </Descriptions.Item>
+
+            {/* Thông tin thanh toán */}
+            <Descriptions.Item label="Tiền đã cọc">
+              <Text strong style={{ color: '#ff7875' }}>
                 {formatPrice(selectedRoom.totalAmount)} VNĐ
               </Text>
             </Descriptions.Item>
+            <Descriptions.Item label="Còn phải thanh toán">
+              <Text strong style={{ color: '#faad14' }}>
+                {formatPrice(
+                  (selectedRoom.rooms[0]?.roomId?.price || 0) -
+                    selectedRoom.totalAmount
+                )}{' '}
+                VNĐ
+              </Text>
+            </Descriptions.Item>
+            <Descriptions.Item label="Tổng giá phòng" span={2}>
+              <Text strong style={{ color: '#52c41a', fontSize: '16px' }}>
+                {formatPrice(selectedRoom.rooms[0]?.roomId?.price)} VNĐ/tháng
+              </Text>
+            </Descriptions.Item>
+
             <Descriptions.Item label="Ngày đặt" span={2}>
               {formatDate(selectedRoom.createdAt)}
             </Descriptions.Item>
