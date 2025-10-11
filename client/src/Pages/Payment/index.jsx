@@ -79,7 +79,12 @@ const PaymentPage = () => {
         }
       );
 
-      if (response.data.checkoutUrl) {
+      if (response.data.checkoutUrl && response.data.orderId) {
+        // Lưu thông tin vào localStorage để sử dụng trong PaymentSuccess
+        localStorage.setItem('currentOrderId', response.data.orderId);
+        localStorage.setItem('currentUserId', userId);
+        localStorage.setItem('currentRooms', JSON.stringify([roomData]));
+
         window.location.href = response.data.checkoutUrl;
       }
     } catch (error) {

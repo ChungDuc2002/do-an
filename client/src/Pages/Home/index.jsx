@@ -66,24 +66,100 @@ const HomePage = () => {
   const navigate = useNavigate();
   const [filters, setFilters] = useState({
     type: '',
-    price: '',
-    acreage: '',
+    priceRange: [0, 50000000], // Sử dụng array cho slider
+    acreageRange: [0, 100], // Sử dụng array cho slider
+    priceOption: '', // Để lưu option được chọn
+    acreageOption: '', // Để lưu option được chọn
   });
 
-  const handleFilterChange = (e, field) => {
+  const handleFilterChange = (field, value) => {
     setFilters((prev) => ({
       ...prev,
-      [field]: e.target.value,
+      [field]: value,
     }));
+  };
+
+  // Xử lý khi chọn khoảng giá từ dropdown
+  const handlePriceOptionChange = (option) => {
+    setFilters((prev) => ({
+      ...prev,
+      priceOption: option,
+    }));
+
+    // Chuyển đổi option thành range cho slider
+    switch (option) {
+      case '0-2':
+        setFilters((prev) => ({ ...prev, priceRange: [0, 2000000] }));
+        break;
+      case '2-4':
+        setFilters((prev) => ({ ...prev, priceRange: [2000000, 4000000] }));
+        break;
+      case '4-6':
+        setFilters((prev) => ({ ...prev, priceRange: [4000000, 6000000] }));
+        break;
+      case '6-10':
+        setFilters((prev) => ({ ...prev, priceRange: [6000000, 10000000] }));
+        break;
+      case '10+':
+        setFilters((prev) => ({ ...prev, priceRange: [10000000, 50000000] }));
+        break;
+      default:
+        break;
+    }
+  };
+
+  // Xử lý khi chọn khoảng diện tích từ dropdown
+  const handleAcreageOptionChange = (option) => {
+    setFilters((prev) => ({
+      ...prev,
+      acreageOption: option,
+    }));
+
+    // Chuyển đổi option thành range cho slider
+    switch (option) {
+      case '0-20':
+        setFilters((prev) => ({ ...prev, acreageRange: [0, 20] }));
+        break;
+      case '20-30':
+        setFilters((prev) => ({ ...prev, acreageRange: [20, 30] }));
+        break;
+      case '30-50':
+        setFilters((prev) => ({ ...prev, acreageRange: [30, 50] }));
+        break;
+      case '50+':
+        setFilters((prev) => ({ ...prev, acreageRange: [50, 100] }));
+        break;
+      default:
+        break;
+    }
+  };
+
+  // Format giá tiền
+  const formatPrice = (price) => {
+    if (price >= 1000000) {
+      return `${(price / 1000000).toFixed(1)} triệu`;
+    }
+    return `${(price / 1000).toFixed(0)}k`;
   };
 
   const handleSearch = () => {
     const searchParams = new URLSearchParams();
 
     if (filters.type) searchParams.append('type', filters.type);
-    if (filters.price) searchParams.append('price', filters.price);
-    if (filters.acreage) searchParams.append('acreage', filters.acreage);
 
+    // Xử lý giá tiền - chỉ gửi khi có thay đổi từ default
+    if (filters.priceRange[0] > 0 || filters.priceRange[1] < 50000000) {
+      searchParams.append('minPrice', filters.priceRange[0]);
+      searchParams.append('maxPrice', filters.priceRange[1]);
+    }
+
+    // Xử lý diện tích - chỉ gửi khi có thay đổi từ default
+    if (filters.acreageRange[0] > 0 || filters.acreageRange[1] < 100) {
+      searchParams.append('minAcreage', filters.acreageRange[0]);
+      searchParams.append('maxAcreage', filters.acreageRange[1]);
+    }
+
+    console.log('Search params:', searchParams.toString());
     navigate(`/search?${searchParams.toString()}`);
   };
 
@@ -105,57 +181,298 @@ const HomePage = () => {
           </div>
         </div>
       </div>
-      <div className=" container wrapper-home-filter">
-        <h1 className="title">Bộ lọc</h1>
+      <div className="container wrapper-home-filter">
+        <div className="filter-header">
+          <h1 className="title">Tìm kiếm phòng trọ</h1>
+          <p className="subtitle">
+            Lọc theo tiêu chí để tìm phòng phù hợp nhất
+          </p>
+        </div>
+
         <div className="filter-container">
-          <div className="filter-item">
-            <select
-              defaultValue=""
-              value={filters.type}
-              onChange={(e) => handleFilterChange(e, 'type')}
-            >
-              <option value="" disabled>
-                Loại phòng
-              </option>
-              <option value="phong-tro">Phòng trọ</option>
-              <option value="nha-nguyen-can">Nhà nguyên căn</option>
-              <option value="can-ho">Căn hộ</option>
-            </select>
+          {/* Loại phòng */}
+          <div className="filter-group">
+            <div className="filter-label">
+              <span className="label-text">Loại phòng</span>
+              <span className="label-icon">🏠</span>
+            </div>
+            <div className="filter-options">
+              <div className="radio-group">
+                <label
+                  className={`radio-option ${
+                    filters.type === '' ? 'active' : ''
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="type"
+                    value=""
+                    checked={filters.type === ''}
+                    onChange={(e) => handleFilterChange('type', e.target.value)}
+                  />
+                  <span className="radio-text">Tất cả</span>
+                </label>
+                <label
+                  className={`radio-option ${
+                    filters.type === 'phong-tro' ? 'active' : ''
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="type"
+                    value="phong-tro"
+                    checked={filters.type === 'phong-tro'}
+                    onChange={(e) => handleFilterChange('type', e.target.value)}
+                  />
+                  <span className="radio-text">Phòng trọ</span>
+                </label>
+                <label
+                  className={`radio-option ${
+                    filters.type === 'nha-nguyen-can' ? 'active' : ''
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="type"
+                    value="nha-nguyen-can"
+                    checked={filters.type === 'nha-nguyen-can'}
+                    onChange={(e) => handleFilterChange('type', e.target.value)}
+                  />
+                  <span className="radio-text">Nhà nguyên căn</span>
+                </label>
+                <label
+                  className={`radio-option ${
+                    filters.type === 'can-ho' ? 'active' : ''
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="type"
+                    value="can-ho"
+                    checked={filters.type === 'can-ho'}
+                    onChange={(e) => handleFilterChange('type', e.target.value)}
+                  />
+                  <span className="radio-text">Căn hộ</span>
+                </label>
+              </div>
+            </div>
           </div>
-          <div className="filter-item">
-            <select
-              defaultValue=""
-              value={filters.price}
-              onChange={(e) => handleFilterChange(e, 'price')}
-            >
-              <option value="" disabled>
-                Mức giá
-              </option>
-              <option value="0-2">Dưới 2 triệu</option>
-              <option value="2-4">2 - 4 triệu</option>
-              <option value="4-6">4 - 6 triệu</option>
-              <option value="6-10">6 - 10 triệu</option>
-              <option value="10+">Trên 10 triệu</option>
-            </select>
+
+          {/* Mức giá */}
+          <div className="filter-group">
+            <div className="filter-label">
+              <span className="label-text">Mức giá</span>
+              <span className="label-icon">💰</span>
+            </div>
+            <div className="slider-container">
+              <div className="range-slider">
+                <input
+                  type="range"
+                  min="0"
+                  max="50000000"
+                  step="500000"
+                  value={filters.priceRange[0]}
+                  onChange={(e) =>
+                    handleFilterChange('priceRange', [
+                      parseInt(e.target.value),
+                      filters.priceRange[1],
+                    ])
+                  }
+                  className="slider slider-min"
+                />
+                <input
+                  type="range"
+                  min="0"
+                  max="50000000"
+                  step="500000"
+                  value={filters.priceRange[1]}
+                  onChange={(e) =>
+                    handleFilterChange('priceRange', [
+                      filters.priceRange[0],
+                      parseInt(e.target.value),
+                    ])
+                  }
+                  className="slider slider-max"
+                />
+                <div className="slider-track"></div>
+                <div
+                  className="slider-range"
+                  style={{
+                    left: `${(filters.priceRange[0] / 50000000) * 100}%`,
+                    width: `${
+                      ((filters.priceRange[1] - filters.priceRange[0]) /
+                        50000000) *
+                      100
+                    }%`,
+                  }}
+                ></div>
+              </div>
+              <div className="range-values">
+                <span className="min-value">
+                  {formatPrice(filters.priceRange[0])}
+                </span>
+                <span className="separator">-</span>
+                <span className="max-value">
+                  {formatPrice(filters.priceRange[1])}
+                </span>
+              </div>
+            </div>
+            <div className="quick-options">
+              <button
+                className={`quick-btn ${
+                  filters.priceOption === '0-2' ? 'active' : ''
+                }`}
+                onClick={() => handlePriceOptionChange('0-2')}
+              >
+                Dưới 2tr
+              </button>
+              <button
+                className={`quick-btn ${
+                  filters.priceOption === '2-4' ? 'active' : ''
+                }`}
+                onClick={() => handlePriceOptionChange('2-4')}
+              >
+                2-4tr
+              </button>
+              <button
+                className={`quick-btn ${
+                  filters.priceOption === '4-6' ? 'active' : ''
+                }`}
+                onClick={() => handlePriceOptionChange('4-6')}
+              >
+                4-6tr
+              </button>
+              <button
+                className={`quick-btn ${
+                  filters.priceOption === '6-10' ? 'active' : ''
+                }`}
+                onClick={() => handlePriceOptionChange('6-10')}
+              >
+                6-10tr
+              </button>
+              <button
+                className={`quick-btn ${
+                  filters.priceOption === '10+' ? 'active' : ''
+                }`}
+                onClick={() => handlePriceOptionChange('10+')}
+              >
+                Trên 10tr
+              </button>
+            </div>
           </div>
-          <div className="filter-item">
-            <select
-              defaultValue=""
-              value={filters.acreage}
-              onChange={(e) => handleFilterChange(e, 'acreage')}
-            >
-              <option value="" disabled>
-                Diện tích
-              </option>
-              <option value="0-20">Dưới 20m²</option>
-              <option value="20-30">20 - 30m²</option>
-              <option value="30-50">30 - 50m²</option>
-              <option value="50+">Trên 50m²</option>
-            </select>
+
+          {/* Diện tích */}
+          <div className="filter-group">
+            <div className="filter-label">
+              <span className="label-text">Diện tích</span>
+              <span className="label-icon">📐</span>
+            </div>
+            <div className="slider-container">
+              <div className="range-slider">
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  step="5"
+                  value={filters.acreageRange[0]}
+                  onChange={(e) =>
+                    handleFilterChange('acreageRange', [
+                      parseInt(e.target.value),
+                      filters.acreageRange[1],
+                    ])
+                  }
+                  className="slider slider-min"
+                />
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  step="5"
+                  value={filters.acreageRange[1]}
+                  onChange={(e) =>
+                    handleFilterChange('acreageRange', [
+                      filters.acreageRange[0],
+                      parseInt(e.target.value),
+                    ])
+                  }
+                  className="slider slider-max"
+                />
+                <div className="slider-track"></div>
+                <div
+                  className="slider-range"
+                  style={{
+                    left: `${(filters.acreageRange[0] / 100) * 100}%`,
+                    width: `${
+                      ((filters.acreageRange[1] - filters.acreageRange[0]) /
+                        100) *
+                      100
+                    }%`,
+                  }}
+                ></div>
+              </div>
+              <div className="range-values">
+                <span className="min-value">{filters.acreageRange[0]}m²</span>
+                <span className="separator">-</span>
+                <span className="max-value">{filters.acreageRange[1]}m²</span>
+              </div>
+            </div>
+            <div className="quick-options">
+              <button
+                className={`quick-btn ${
+                  filters.acreageOption === '0-20' ? 'active' : ''
+                }`}
+                onClick={() => handleAcreageOptionChange('0-20')}
+              >
+                Dưới 20m²
+              </button>
+              <button
+                className={`quick-btn ${
+                  filters.acreageOption === '20-30' ? 'active' : ''
+                }`}
+                onClick={() => handleAcreageOptionChange('20-30')}
+              >
+                20-30m²
+              </button>
+              <button
+                className={`quick-btn ${
+                  filters.acreageOption === '30-50' ? 'active' : ''
+                }`}
+                onClick={() => handleAcreageOptionChange('30-50')}
+              >
+                30-50m²
+              </button>
+              <button
+                className={`quick-btn ${
+                  filters.acreageOption === '50+' ? 'active' : ''
+                }`}
+                onClick={() => handleAcreageOptionChange('50+')}
+              >
+                Trên 50m²
+              </button>
+            </div>
           </div>
-          <button className="search-button" onClick={handleSearch}>
-            Tìm kiếm
-          </button>
+
+          {/* Nút tìm kiếm */}
+          <div className="search-section">
+            <button className="search-button" onClick={handleSearch}>
+              <span className="search-icon">🔍</span>
+              <span className="search-text">Tìm kiếm ngay</span>
+            </button>
+            <button
+              className="reset-button"
+              onClick={() =>
+                setFilters({
+                  type: '',
+                  priceRange: [0, 50000000],
+                  acreageRange: [0, 100],
+                  priceOption: '',
+                  acreageOption: '',
+                })
+              }
+            >
+              Đặt lại
+            </button>
+          </div>
         </div>
       </div>
 

@@ -23,6 +23,7 @@ export async function searchRooms(req, res) {
       maxPrice,
       minAcreage,
       maxAcreage,
+      status,
       page = 1,
       limit = 10,
     } = req.query;
@@ -31,6 +32,10 @@ export async function searchRooms(req, res) {
 
     if (type) {
       searchConditions.type = type;
+    }
+
+    if (status) {
+      searchConditions.status = status;
     }
 
     if (minPrice || maxPrice) {
@@ -122,18 +127,54 @@ export async function createRoom(req, res) {
 
 export async function updateRoom(req, res) {
   try {
-    const { id } = req.params;
-    const updatedRoom = await rooms.findByIdAndUpdate(
-      id,
-      { ...req.body },
-      { new: true }
-    );
-    if (!updatedRoom) {
-      return res.status(404).json({ message: 'Không tìm thấy phòng' });
-    }
-    return res.status(200).json({
-      message: 'Cập nhật phòng thành công',
-      room: updatedRoom,
+    upload.fields([
+      { name: 'images', maxCount: 6 },
+      { name: 'rules', maxCount: 3 },
+    ])(req, res, async function (err) {
+      if (err) {
+        return res.status(400).json({ message: 'Lỗi upload file' });
+      }
+
+      const { id } = req.params;
+      const roomData = { ...req.body };
+
+      // Parse JSON strings nếu có
+      if (roomData.address && typeof roomData.address === 'string') {
+        roomData.address = JSON.parse(roomData.address);
+      }
+      if (roomData.amenities && typeof roomData.amenities === 'string') {
+        roomData.amenities = JSON.parse(roomData.amenities);
+      }
+
+      // Lấy thông tin phòng hiện tại để giữ lại ảnh cũ nếu không upload ảnh mới
+      const existingRoom = await rooms.findById(id);
+      if (!existingRoom) {
+        return res.status(404).json({ message: 'Không tìm thấy phòng' });
+      }
+
+      // Xử lý upload file mới
+      if (req.files) {
+        if (req.files['images']) {
+          roomData.images = req.files['images'].map(
+            (file) => `/uploads/${file.filename}`
+          );
+        }
+        if (req.files['rules']) {
+          roomData.rules = req.files['rules'].map(
+            (file) => `/uploads/${file.filename}`
+          );
+        }
+      }
+
+      const updatedRoom = await rooms
+        .findByIdAndUpdate(id, roomData, { new: true })
+        .populate('owner', 'fullName email phone')
+        .populate('currentTenant', 'fullName');
+
+      return res.status(200).json({
+        message: 'Cập nhật phòng thành công',
+        room: updatedRoom,
+      });
     });
   } catch (error) {
     return res.status(500).json({ message: error.message });

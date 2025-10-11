@@ -29,43 +29,378 @@
 
   &-filter {
     margin-bottom: 50px !important;
-    .filter-container {
-      display: flex;
-      gap: 20px;
-      align-items: center;
-      border-radius: 8px;
-      background-color: transparent;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      z-index: -1;
     }
 
-    .filter-item {
-      flex: 1;
-      select {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        background: white;
-        font-size: 14px;
-        outline: none;
+    .filter-header {
+      text-align: center;
+      margin-bottom: 30px;
 
-        &:focus {
-          border-color: #0247a6;
+      .title {
+        color: white;
+        font-size: 32px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .subtitle {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 16px;
+        margin: 0;
+      }
+    }
+
+    .filter-container {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    .filter-group {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      }
+    }
+
+    .filter-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+
+      .label-text {
+        font-size: 18px;
+        font-weight: 600;
+        color: #333;
+      }
+
+      .label-icon {
+        font-size: 20px;
+      }
+    }
+
+    // Radio buttons cho loại phòng
+    .radio-group {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .radio-option {
+      position: relative;
+      cursor: pointer;
+      padding: 12px 20px;
+      border: 2px solid #e1e5e9;
+      border-radius: 25px;
+      background: white;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      font-weight: 500;
+
+      input[type='radio'] {
+        display: none;
+      }
+
+      .radio-text {
+        color: #666;
+        font-size: 14px;
+      }
+
+      &:hover {
+        border-color: #667eea;
+        transform: translateY(-1px);
+      }
+
+      &.active {
+        border-color: #667eea;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+
+        .radio-text {
+          color: white;
         }
       }
     }
 
-    .search-button {
-      padding: 10px 30px;
-      background: #0247a6;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
+    // Slider styles
+    .slider-container {
+      margin-bottom: 15px;
+    }
+
+    .range-slider {
+      position: relative;
+      height: 6px;
+      margin: 20px 0;
+    }
+
+    .slider {
+      position: absolute;
+      width: 100%;
+      height: 6px;
+      outline: none;
+      -webkit-appearance: none;
+      background: transparent;
+      pointer-events: none;
+
+      &::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #667eea;
+        cursor: pointer;
+        pointer-events: all;
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+        transition: all 0.3s ease;
+
+        &:hover {
+          transform: scale(1.1);
+          box-shadow: 0 4px 12px rgba(102, 126, 234, 0.6);
+        }
+      }
+
+      &::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #667eea;
+        cursor: pointer;
+        pointer-events: all;
+        border: none;
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+      }
+    }
+
+    .slider-track {
+      position: absolute;
+      width: 100%;
+      height: 6px;
+      background: #e1e5e9;
+      border-radius: 3px;
+    }
+
+    .slider-range {
+      position: absolute;
+      height: 6px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 3px;
+      transition: all 0.3s ease;
+    }
+
+    .range-values {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+
+      .min-value,
+      .max-value {
+        background: #f8f9fa;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #667eea;
+        border: 1px solid #e1e5e9;
+      }
+
+      .separator {
+        color: #999;
+        font-weight: 500;
+      }
+    }
+
+    // Quick options
+    .quick-options {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .quick-btn {
+      padding: 8px 16px;
+      border: 1px solid #e1e5e9;
+      border-radius: 20px;
+      background: white;
+      color: #666;
+      font-size: 12px;
       font-weight: 500;
-      transition: background 0.2s ease;
+      cursor: pointer;
+      transition: all 0.3s ease;
 
       &:hover {
-        background: darken(#0247a6, 10%);
+        border-color: #667eea;
+        color: #667eea;
+        transform: translateY(-1px);
+      }
+
+      &.active {
+        border-color: #667eea;
+        background: #667eea;
+        color: white;
+      }
+    }
+
+    // Search section
+    .search-section {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .search-button {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 15px 40px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 16px;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+      }
+
+      .search-icon {
+        font-size: 18px;
+      }
+    }
+
+    .reset-button {
+      padding: 15px 30px;
+      background: rgba(255, 255, 255, 0.9);
+      color: #666;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 14px;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: rgba(255, 255, 255, 1);
+        border-color: rgba(255, 255, 255, 0.5);
+        transform: translateY(-1px);
+      }
+    }
+
+    // Responsive Design
+    @media (max-width: 768px) {
+      padding: 20px 15px;
+      border-radius: 15px;
+      margin: 0 10px 30px 10px;
+
+      .filter-header {
+        .title {
+          font-size: 24px;
+        }
+
+        .subtitle {
+          font-size: 14px;
+        }
+      }
+
+      .filter-group {
+        padding: 15px;
+      }
+
+      .radio-group {
+        gap: 8px;
+      }
+
+      .radio-option {
+        padding: 8px 12px;
+        font-size: 12px;
+
+        .radio-text {
+          font-size: 12px;
+        }
+      }
+
+      .quick-options {
+        gap: 6px;
+      }
+
+      .quick-btn {
+        padding: 6px 12px;
+        font-size: 11px;
+      }
+
+      .search-section {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .search-button {
+        padding: 12px 30px;
+        font-size: 14px;
+
+        .search-icon {
+          font-size: 16px;
+        }
+      }
+
+      .reset-button {
+        padding: 10px 20px;
+        font-size: 12px;
+      }
+
+      .range-values {
+        .min-value,
+        .max-value {
+          padding: 4px 8px;
+          font-size: 12px;
+        }
+      }
+    }
+
+    @media (max-width: 480px) {
+      .radio-group {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .radio-option {
+        justify-content: center;
+        width: 100%;
+      }
+
+      .quick-options {
+        justify-content: center;
       }
     }
   }

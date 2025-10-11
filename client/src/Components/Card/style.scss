@@ -2,41 +2,250 @@
   width: 300px;
   position: relative;
   margin: 10px 0;
-  // min-height: 380px;
-  img {
-    height: 240px !important;
+  transition: all 0.3s ease;
+
+  // Card cover với overlay trạng thái
+  .card-cover {
+    position: relative;
+    overflow: hidden;
+
+    img {
+      height: 240px !important;
+      width: 100%;
+      object-fit: cover;
+      transition: all 0.3s ease;
+    }
+
+    .status-overlay {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 2;
+
+      .status-tag {
+        font-size: 12px;
+        font-weight: 500;
+        border: none;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+        &.ant-tag-green {
+          background: #52c41a;
+          color: white;
+        }
+
+        &.ant-tag-red {
+          background: #ff4d4f;
+          color: white;
+        }
+
+        &.ant-tag-orange {
+          background: #fa8c16;
+          color: white;
+        }
+      }
+    }
   }
+
   .ant-card-body {
     padding: 15px 5px;
+
     .ant-card-meta-title {
       font-weight: 500;
       padding: 5px 0;
+      cursor: pointer;
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: #1890ff;
+      }
+
+      &.disabled-title {
+        color: #999;
+        cursor: not-allowed;
+
+        &:hover {
+          color: #999;
+        }
+      }
     }
+
     .ant-space {
       display: block;
       padding: 3px;
       font-size: 15px;
     }
+
     .icon {
       position: absolute;
       top: 45%;
       right: 5%;
       font-size: 25px;
-      color: red;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 3;
+
+      .anticon {
+        transition: all 0.3s ease;
+
+        &:hover {
+          transform: scale(1.2);
+          filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+        }
+
+        // Màu đỏ cho icon đã thích
+        &[style*='color: rgb(255, 77, 79)'] {
+          animation: heartBeat 0.5s ease-in-out;
+        }
+      }
+
       &:hover {
-        transform: scale(1.1);
-        opacity: 0.8;
+        transform: scale(1.05);
       }
     }
+
+    // Animation cho trái tim
+    @keyframes heartBeat {
+      0% {
+        transform: scale(1);
+      }
+      25% {
+        transform: scale(1.2);
+      }
+      50% {
+        transform: scale(1.1);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
     .price {
       color: orange;
+      font-weight: 500;
     }
+
     .type,
     .acreage {
       padding: 2px 5px;
       background-color: #f5f5f5;
       border: 1px solid #e4e1e1;
       border-radius: 5px;
+      font-size: 12px;
+    }
+
+    // Thông báo trạng thái
+    .status-message {
+      margin-top: 8px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      text-align: center;
+
+      .message-text {
+        font-size: 13px;
+        font-weight: 500;
+
+        &.status-rented {
+          color: #ff4d4f;
+          background: #fff2f0;
+          padding: 4px 8px;
+          border-radius: 4px;
+          border: 1px solid #ffccc7;
+        }
+
+        &.status-maintenance {
+          color: #fa8c16;
+          background: #fff7e6;
+          padding: 4px 8px;
+          border-radius: 4px;
+          border: 1px solid #ffd591;
+        }
+      }
+    }
+
+    // Nút đặt cọc và đăng nhập
+    .booking-actions {
+      margin-top: 12px;
+
+      .booking-button {
+        width: 100%;
+        height: 36px;
+        border-radius: 6px;
+        font-weight: 500;
+
+        &:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 4px 8px rgba(24, 144, 255, 0.3);
+        }
+      }
+
+      .login-button {
+        width: 100%;
+        height: 36px;
+        border-radius: 6px;
+        font-weight: 500;
+        border: 1px solid #d9d9d9;
+        color: #666;
+
+        &:hover {
+          border-color: #1890ff;
+          color: #1890ff;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+      }
+    }
+  }
+
+  // Trạng thái disabled cho phòng không thể đặt
+  &.disabled {
+    opacity: 0.8;
+
+    .card-cover img {
+      filter: grayscale(20%);
+    }
+
+    &:hover {
+      transform: none;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  // Hover effect cho phòng có thể đặt
+  &:not(.disabled):hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+
+    .card-cover img {
+      transform: scale(1.05);
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .ant-card {
+    width: 100%;
+    margin: 8px 0;
+
+    .card-cover {
+      .status-overlay {
+        top: 8px;
+        right: 8px;
+
+        .status-tag {
+          font-size: 11px;
+        }
+      }
+    }
+
+    .ant-card-body {
+      padding: 12px 8px;
+
+      .icon {
+        top: 40%;
+        right: 3%;
+        font-size: 20px;
+      }
     }
   }
 }

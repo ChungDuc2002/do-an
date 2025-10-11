@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Space } from 'antd';
-import { HeartFilled } from '@ant-design/icons';
+import { Card, Space, Tag, Button } from 'antd';
+import { HeartFilled, HeartOutlined } from '@ant-design/icons';
 import Meta from 'antd/es/card/Meta';
 import StoreLocationIcon from './../Icons/StoreLocationIcon';
 import { useNavigate } from 'react-router-dom';
@@ -10,9 +10,44 @@ import './style.scss';
 
 const CardPage = ({ rooms }) => {
   const [userId, setUserId] = useState('');
+  const [isFavorite, setIsFavorite] = useState(false);
 
   const auth = localStorage.getItem('authSon');
   const navigate = useNavigate();
+
+  // Helper function để lấy thông tin trạng thái phòng
+  const getRoomStatusInfo = (status) => {
+    switch (status) {
+      case 'available':
+        return {
+          text: 'Còn trống',
+          color: 'green',
+          canBook: true,
+          description: 'Phòng sẵn sàng cho thuê',
+        };
+      case 'rented':
+        return {
+          text: 'Đã được thuê',
+          color: 'red',
+          canBook: false,
+          description: 'Phòng đã có người thuê',
+        };
+      case 'maintenance':
+        return {
+          text: 'Đang bảo trì',
+          color: 'orange',
+          canBook: false,
+          description: 'Phòng tạm thời không thể cho thuê',
+        };
+      default:
+        return {
+          text: 'Không xác định',
+          color: 'gray',
+          canBook: false,
+          description: 'Trạng thái không rõ',
+        };
+    }
+  };
 
   useEffect(() => {
     const getIdUser = async () => {
@@ -35,56 +70,134 @@ const CardPage = ({ rooms }) => {
     getIdUser();
   }, []);
 
+  // Kiểm tra xem phòng đã được thêm vào yêu thích chưa
+  useEffect(() => {
+    const checkFavoriteStatus = async () => {
+      if (userId && rooms._id) {
+        try {
+          const response = await axios.get(
+            `http://localhost:5000/favorite/checkFavorite`,
+            {
+              params: {
+                userId: userId,
+                roomId: rooms._id,
+              },
+            }
+          );
+          setIsFavorite(response.data.isFavorite);
+        } catch (err) {
+          console.log('Error checking favorite status:', err);
+          setIsFavorite(false);
+        }
+      }
+    };
+    checkFavoriteStatus();
+  }, [userId, rooms._id]);
+
   const handleNavigateToRoom = () => {
     navigate(`/rooms/${rooms._id}`);
   };
 
-  const handleAddToFavorite = async () => {
+  const handleToggleFavorite = async () => {
     if (auth) {
       try {
         const data = {
           userId,
           roomId: rooms._id,
         };
-        await axios.post('http://localhost:5000/favorite/addToFavorite', data);
-        toast.success('Thêm vào yêu thích thành công !');
+
+        if (isFavorite) {
+          // Nếu đã thích thì xóa khỏi yêu thích
+          await axios.delete(
+            'http://localhost:5000/favorite/removeFromFavorite',
+            {
+              data: data,
+            }
+          );
+          setIsFavorite(false);
+          toast.success('Đã xóa khỏi danh sách yêu thích !');
+        } else {
+          // Nếu chưa thích thì thêm vào yêu thích
+          await axios.post(
+            'http://localhost:5000/favorite/addToFavorite',
+            data
+          );
+          setIsFavorite(true);
+          toast.success('Thêm vào yêu thích thành công !');
+        }
       } catch (err) {
-        toast.error('Phòng đã có trong danh sách yêu thích !');
+        if (isFavorite) {
+          toast.error('Không thể xóa khỏi yêu thích !');
+        } else {
+          toast.error('Phòng đã có trong danh sách yêu thích !');
+        }
       }
     } else {
       toast.error('Vui lòng đăng nhập để thêm phòng vào mục yêu thích');
     }
   };
 
+  // Đảm bảo có status, mặc định là 'available' nếu không có
+  const roomStatus = rooms.status || 'available';
+  const statusInfo = getRoomStatusInfo(roomStatus);
+
   return (
     <Card
-      hoverable
+      hoverable={statusInfo.canBook}
+      className={`room-card ${!statusInfo.canBook ? 'disabled' : ''}`}
       cover={
-        <img
-          alt={rooms.title}
-          src={
-            rooms.images[0]?.startsWith('http')
-              ? rooms.images[0]
-              : `http://localhost:5000${rooms.images[0]}`
-          }
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.src = 'https://placehold.co/600x400?text=No+Image';
-          }}
-        />
+        <div className="card-cover">
+          <img
+            alt={rooms.title}
+            src={
+              rooms.images[0]?.startsWith('http')
+                ? rooms.images[0]
+                : `http://localhost:5000${rooms.images[0]}`
+            }
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = 'https://placehold.co/600x400?text=No+Image';
+            }}
+          />
+          <div className={`status-overlay status-${roomStatus}`}>
+            <Tag color={statusInfo.color} className="status-tag">
+              {statusInfo.text}
+            </Tag>
+          </div>
+        </div>
       }
     >
-      <Meta title={rooms.title} onClick={handleNavigateToRoom} />
-      <Space>
-        <span className="icon">
-          <HeartFilled onClick={handleAddToFavorite} />
-        </span>
-      </Space>
+      <Meta
+        title={rooms.title}
+        onClick={statusInfo.canBook ? handleNavigateToRoom : undefined}
+        className={!statusInfo.canBook ? 'disabled-title' : ''}
+      />
+
+      {/* Chỉ hiển thị icon yêu thích khi phòng còn trống */}
+      {statusInfo.canBook && auth && (
+        <Space>
+          <span className="icon">
+            {isFavorite ? (
+              <HeartFilled
+                onClick={handleToggleFavorite}
+                style={{ color: '#ff4d4f' }}
+              />
+            ) : (
+              <HeartOutlined
+                onClick={handleToggleFavorite}
+                style={{ color: '#8c8c8c' }}
+              />
+            )}
+          </span>
+        </Space>
+      )}
+
       <Space>
         <span className="price">
           Giá thuê : {new Intl.NumberFormat().format(rooms.price)}đ
         </span>
       </Space>
+
       <Space
         style={{
           display: 'flex',
@@ -101,6 +214,7 @@ const CardPage = ({ rooms }) => {
         </span>
         <span className="acreage">{rooms.acreage}m²</span>
       </Space>
+
       <Space>
         <span className="address">
           <StoreLocationIcon />{' '}
@@ -110,6 +224,41 @@ const CardPage = ({ rooms }) => {
           </span>
         </span>
       </Space>
+
+      {/* Hiển thị thông báo trạng thái khi không thể đặt phòng */}
+      {!statusInfo.canBook && (
+        <div className="status-message">
+          <span className={`message-text status-${roomStatus}`}>
+            {statusInfo.description}
+          </span>
+        </div>
+      )}
+
+      {/* Nút đặt cọc chỉ hiển thị khi phòng còn trống */}
+      {statusInfo.canBook && auth && (
+        <div className="booking-actions">
+          <Button
+            type="primary"
+            onClick={() => navigate(`/payment/${rooms._id}`)}
+            className="booking-button"
+          >
+            Đặt cọc phòng
+          </Button>
+        </div>
+      )}
+
+      {/* Thông báo cần đăng nhập nếu chưa đăng nhập */}
+      {statusInfo.canBook && !auth && (
+        <div className="booking-actions">
+          <Button
+            type="default"
+            onClick={() => navigate('/login')}
+            className="login-button"
+          >
+            Đăng nhập để đặt phòng
+          </Button>
+        </div>
+      )}
     </Card>
   );
 };

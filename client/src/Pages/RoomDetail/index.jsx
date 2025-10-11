@@ -166,6 +166,23 @@ const RoomDetail = () => {
             ))}
           </div>
         </div>
+        <div className="rules">
+          <h2>Quy định phòng</h2>
+          {room.rules && room.rules.length > 0 ? (
+            <div className="rules-images">
+              {room.rules.map((rule, index) => (
+                <Image
+                  key={index}
+                  src={`http://localhost:5000${rule}`}
+                  alt={`Quy định ${index + 1}`}
+                  className="rule-image"
+                />
+              ))}
+            </div>
+          ) : (
+            <p>Không có quy định cụ thể.</p>
+          )}
+        </div>
         <Divider />
         <div className="btn">
           <button onClick={handleDeposit}>Đặt cọc phòng</button>
