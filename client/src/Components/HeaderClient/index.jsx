@@ -94,14 +94,6 @@ const HeaderClient = () => {
     },
     {
       key: '2',
-      label: 'Thông tin tài khoản',
-      icon: <SettingOutlined />,
-      onClick: () => {
-        window.location.href = '/profile/2';
-      },
-    },
-    {
-      key: '3',
       label: 'Thông tin lưu trú',
       icon: <HomeOutlined />,
       onClick: () => {

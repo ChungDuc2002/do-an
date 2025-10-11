@@ -113,6 +113,10 @@ const AdminLayout = () => {
           key: '/admin/manager-rooms',
           label: 'Quản lý phòng',
         },
+        {
+          key: '/admin/manager-booked-rooms',
+          label: 'Quản lý phòng đã đặt',
+        },
       ],
     },
     {

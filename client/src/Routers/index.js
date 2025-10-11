@@ -18,6 +18,7 @@ import AdminLayout from './../Layouts/AdminLayout';
 import ManagerUsers from '../Pages/Admin/ManagerUsers';
 import CreateRoomPage from './../Pages/Admin/Rooms/CreateRooms';
 import ManagerRoomPage from '../Pages/Admin/Rooms/ManagerRooms';
+import ManagerBookedRooms from '../Pages/Admin/Rooms/ManagerBookedRooms';
 
 import CardPage from '../Components/Card';
 
@@ -87,6 +88,10 @@ const InitRouters = [
       {
         path: '/admin/manager-rooms',
         element: <ManagerRoomPage />,
+      },
+      {
+        path: '/admin/manager-booked-rooms',
+        element: <ManagerBookedRooms />,
       },
     ],
   },

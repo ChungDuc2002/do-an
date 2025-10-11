@@ -258,3 +258,34 @@ export async function getRoomById(req, res) {
     return res.status(500).json({ message: error.message });
   }
 }
+
+// Lấy danh sách phòng HOT (views > 50)
+export async function getHotRooms(req, res) {
+  try {
+    const { limit = 50 } = req.query;
+
+    const hotRooms = await rooms
+      .find({
+        views: { $gt: 50 },
+        status: 'available', // Chỉ lấy phòng còn trống
+      })
+      .populate('owner', 'fullName email phone')
+      .sort({ views: -1 }) // Sắp xếp theo lượt xem giảm dần
+      .limit(parseInt(limit));
+
+    return res.status(200).json({
+      success: true,
+      data: hotRooms || [], // Đảm bảo luôn trả về array
+      total: hotRooms ? hotRooms.length : 0,
+    });
+  } catch (error) {
+    console.error('Get hot rooms error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Lỗi lấy danh sách phòng HOT',
+      error: error.message,
+      data: [], // Trả về array rỗng khi lỗi
+      total: 0,
+    });
+  }
+}

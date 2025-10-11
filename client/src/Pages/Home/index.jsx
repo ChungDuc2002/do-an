@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import partnerImage from '../../Assets/banner_ohdidi.webp';
 import app_mobile from '../../Assets/banner_app_user.jpg';
 import Card from '../../Components/Card';
+import HotCard from '../../Components/HotCard';
 import axios from 'axios';
-import { ArrowRightOutlined } from '@ant-design/icons';
+import { ArrowRightOutlined, FireFilled } from '@ant-design/icons';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css';
 import './style.scss';
+import '../../Components/HotCard/style.scss';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
@@ -17,6 +19,7 @@ const HomePage = () => {
   const [roomsWholeHouse, setRoomsWholeHouse] = useState([]);
   const [roomsApartment, setRoomsApartment] = useState([]);
   const [roomsMotelRoom, setMotelRoom] = useState([]);
+  const [hotRooms, setHotRooms] = useState([]);
 
   useEffect(() => {
     const getRoomWholeHouse = async () => {
@@ -61,6 +64,27 @@ const HomePage = () => {
       setMotelRoom(result.data);
     };
     getMotelRoom();
+  }, []);
+
+  // Lấy danh sách phòng HOT
+  useEffect(() => {
+    const getHotRooms = async () => {
+      try {
+        const result = await axios.get(
+          'http://localhost:5000/room/getHotRooms',
+          {
+            params: {
+              limit: 8, // Lấy tối đa 8 phòng HOT
+            },
+          }
+        );
+        setHotRooms(result.data.data);
+      } catch (error) {
+        console.error('Error fetching hot rooms:', error);
+        setHotRooms([]);
+      }
+    };
+    getHotRooms();
   }, []);
 
   const navigate = useNavigate();
@@ -475,6 +499,48 @@ const HomePage = () => {
           </div>
         </div>
       </div>
+
+      {/* Phòng HOT */}
+      {hotRooms.length > 0 && (
+        <div className="container wrapper-home-hot-rooms">
+          <h1 className="title">
+            <FireFilled className="fire-icon" />
+            Phòng HOT
+          </h1>
+          <p className="hot-subtitle">Những phòng được quan tâm nhiều nhất</p>
+          <Swiper
+            modules={[Pagination]}
+            breakpoints={{
+              375: {
+                slidesPerView: 1,
+                spaceBetween: 2,
+              },
+              425: {
+                slidesPerView: 2,
+                spaceBetween: 12,
+              },
+              575: {
+                slidesPerView: 3,
+                spaceBetween: 12,
+              },
+              1024: {
+                slidesPerView: 4,
+                spaceBetween: 32,
+              },
+            }}
+          >
+            {hotRooms.map((item, index) => (
+              <SwiperSlide key={index}>
+                <HotCard rooms={item} />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+          <button className="btn-all">
+            <Link to="/search?views=hot">Xem tất cả phòng HOT</Link>
+            <ArrowRightOutlined />
+          </button>
+        </div>
+      )}
 
       {/* nhà nguyên căn */}
       <div className="container wrapper-home-whole_house">

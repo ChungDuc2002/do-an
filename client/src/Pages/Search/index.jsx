@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Row, Col, Select, Card, Spin, Empty, Pagination } from 'antd';
 import CardComponent from '../../Components/Card';
+import HotCard from '../../Components/HotCard';
 import axios from 'axios';
 import './style.scss';
 
@@ -22,6 +23,7 @@ const SearchPage = () => {
     maxPrice: searchParams.get('maxPrice') || '',
     minAcreage: searchParams.get('minAcreage') || '',
     maxAcreage: searchParams.get('maxAcreage') || '',
+    views: searchParams.get('views') || '', // Thêm filter cho phòng HOT
   });
 
   useEffect(() => {
@@ -45,16 +47,44 @@ const SearchPage = () => {
 
         console.log('API params:', params);
 
-        const response = await axios.get('http://localhost:5000/room/search', {
-          params,
-        });
+        // Nếu là filter phòng HOT, sử dụng API khác
+        if (filters.views === 'hot') {
+          const response = await axios.get(
+            'http://localhost:5000/room/getHotRooms',
+            {
+              params: { limit: 50 }, // Lấy nhiều để có thể phân trang
+            }
+          );
 
-        setRooms(response.data.data.docs);
-        setTotal(response.data.data.totalDocs);
+          const hotRoomsData = response.data?.data || [];
+          const startIndex = (page - 1) * pageSize;
+          const endIndex = startIndex + pageSize;
+          const paginatedRooms = hotRoomsData.slice(startIndex, endIndex);
+
+          setRooms(paginatedRooms || []);
+          setTotal(hotRoomsData.length || 0);
+        } else {
+          const response = await axios.get(
+            'http://localhost:5000/room/search',
+            {
+              params,
+            }
+          );
+
+          setRooms(response.data?.data?.docs || []);
+          setTotal(response.data?.data?.totalDocs || 0);
+        }
       } catch (error) {
         console.error('Search error:', error);
-        setRooms([]);
+        setRooms([]); // Đảm bảo luôn set array
         setTotal(0);
+
+        // Hiển thị thông báo lỗi cho user
+        if (filters.views === 'hot') {
+          console.error('Lỗi tải phòng HOT:', error);
+        } else {
+          console.error('Lỗi tìm kiếm:', error);
+        }
       } finally {
         setLoading(false);
       }
@@ -176,23 +206,30 @@ const SearchPage = () => {
         <Col span={18}>
           <div className="search-results">
             <div className="results-header">
-              <h3>Kết quả tìm kiếm ({total} phòng)</h3>
+              <h3>
+                {filters.views === 'hot' ? 'Phòng HOT' : 'Kết quả tìm kiếm'} (
+                {total} phòng)
+              </h3>
             </div>
 
             {loading ? (
               <div className="loading-container">
                 <Spin size="large" />
               </div>
-            ) : rooms.length > 0 ? (
+            ) : rooms && rooms.length > 0 ? (
               <>
                 <Row gutter={[16, 16]}>
-                  {rooms.map((room) => (
-                    <Col span={8} key={room._id}>
-                      <CardComponent rooms={room} />
-                    </Col>
-                  ))}
-                </Row>
-
+                  {rooms &&
+                    rooms.map((room) => (
+                      <Col span={8} key={room._id}>
+                        {filters.views === 'hot' ? (
+                          <HotCard rooms={room} />
+                        ) : (
+                          <CardComponent rooms={room} />
+                        )}
+                      </Col>
+                    ))}
+                </Row>{' '}
                 {/* Pagination */}
                 <div className="pagination-container">
                   <Pagination

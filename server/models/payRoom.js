@@ -21,7 +21,7 @@ const payRoomSchema = mongoose.Schema(
     status_payment: { type: String, default: 'Pending' },
     status_payRoom: {
       type: String,
-      enum: ['Pending', 'Processing', 'Shipping', 'Completed'],
+      enum: ['Pending', 'Confirm', 'Cancel', 'Processing'],
       default: 'Pending',
     },
   },

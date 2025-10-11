@@ -10,6 +10,7 @@ apiRooms.get('/getTypeRoom/:type', roomsController.getTypeRoom);
 apiRooms.get('/getRoomsByType', roomsController.getRoomsByType);
 apiRooms.get('/getRoomById/:id', roomsController.getRoomById);
 apiRooms.get('/search', roomsController.searchRooms);
+apiRooms.get('/getHotRooms', roomsController.getHotRooms);
 
 // *POST API
 

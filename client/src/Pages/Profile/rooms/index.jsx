@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Row, Col, Tag, Image, Button, Empty, Spin, message } from 'antd';
-import {
-  EyeOutlined,
-  PhoneOutlined,
-  MailOutlined,
-  ReloadOutlined,
-} from '@ant-design/icons';
+import { EyeOutlined, ReloadOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './style.scss';
@@ -120,12 +115,14 @@ const InfoRooms = () => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'Completed':
-        return 'green';
       case 'Pending':
         return 'orange';
+      case 'Confirm':
+        return 'green';
       case 'Processing':
         return 'blue';
+      case 'Cancel':
+        return 'red';
       default:
         return 'default';
     }
@@ -133,12 +130,14 @@ const InfoRooms = () => {
 
   const getStatusText = (status) => {
     switch (status) {
-      case 'Completed':
-        return 'Đã hoàn thành';
       case 'Pending':
-        return 'Đang chờ xử lý';
+        return 'Chờ xử lý';
+      case 'Confirm':
+        return 'Đã xác nhận';
       case 'Processing':
         return 'Đang xử lý';
+      case 'Cancel':
+        return 'Đã hủy';
       default:
         return status;
     }
@@ -207,11 +206,11 @@ const InfoRooms = () => {
               </span>
             </div>
             <div className="stat-item">
-              <span className="stat-label">Đã hoàn thành:</span>
+              <span className="stat-label">Đã xác nhận:</span>
               <span className="stat-value">
                 {
                   bookedRooms.filter(
-                    (room) => room.status_payment === 'Completed'
+                    (room) => room.status_payRoom === 'Confirm'
                   ).length
                 }
               </span>
@@ -235,8 +234,8 @@ const InfoRooms = () => {
                     preview={false}
                   />
                   <div className="status-overlay">
-                    <Tag color={getStatusColor(booking.status_payment)}>
-                      {getStatusText(booking.status_payment)}
+                    <Tag color={getStatusColor(booking.status_payRoom)}>
+                      {getStatusText(booking.status_payRoom)}
                     </Tag>
                   </div>
                 </div>
@@ -316,7 +315,7 @@ const InfoRooms = () => {
                   </div>
                 </div>
 
-                {booking.roomInfo.owner && (
+                {/* {booking.roomInfo.owner && (
                   <div className="owner-info">
                     <h4>Thông tin chủ phòng:</h4>
                     <div className="owner-details">
@@ -333,7 +332,7 @@ const InfoRooms = () => {
                       )}
                     </div>
                   </div>
-                )}
+                )} */}
               </div>
             </Card>
           </Col>
