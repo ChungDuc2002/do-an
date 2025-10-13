@@ -71,14 +71,6 @@ const AdminLayout = () => {
           key: '/admin/manager-contact',
           label: 'Quản lý liên hệ',
         },
-        {
-          key: '/admin/manager-comments',
-          label: 'Quản lý phản hồi',
-        },
-        {
-          key: '/admin/manager-featured-category',
-          label: 'Quản lý danh mục nổi bật',
-        },
       ],
     },
     {

@@ -22,11 +22,18 @@
           font-size: 17px;
           font-weight: 500;
         }
+        .ant-image {
+          width: 100% !important;
+          .main-image {
+            height: 200px !important;
+            background-size: cover !important;
+            background-position: center !important;
+          }
+        }
+
         .group {
           padding: 5px 10px;
-          .main-image {
-            // height: 200px;
-          }
+
           h2 {
             color: #1890ff;
             font-size: 17px;

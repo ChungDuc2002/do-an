@@ -7,6 +7,7 @@ import PayRoom from '../models/payRoom.js';
 //! Get API------------
 apiPayRoom.get('/getAllBookedRooms', payRoomController.getAllBookedRooms);
 apiPayRoom.get('/getBookedRoomById/:id', payRoomController.getBookedRoomById);
+apiPayRoom.get('/getUserLiveRooms/:userId', payRoomController.getUserLiveRooms);
 
 //! Put API------------
 apiPayRoom.put('/updateStatus/:id', payRoomController.updateBookedRoomStatus);

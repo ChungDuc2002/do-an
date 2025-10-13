@@ -1,5 +1,45 @@
 import PayRoom from '../models/payRoom.js';
 
+// Lấy phòng đang ở của người dùng (status_payRoom === 'Confirm')
+export async function getUserLiveRooms(req, res) {
+  try {
+    const { userId } = req.params;
+
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Thiếu thông tin userId',
+      });
+    }
+
+    // Lấy những phòng đã được xác nhận (đang ở)
+    const liveRooms = await PayRoom.find({
+      userId: userId,
+      status_payRoom: 'Confirm',
+    })
+      .populate('userId', 'fullName email phone')
+      .populate({
+        path: 'rooms.roomId',
+        select:
+          'title images price address type acreage amenities rules owner description',
+      })
+      .sort({ updatedAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      data: liveRooms,
+      message: 'Lấy danh sách phòng đang ở thành công',
+    });
+  } catch (error) {
+    console.error('Get user live rooms error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Lỗi lấy danh sách phòng đang ở',
+      error: error.message,
+    });
+  }
+}
+
 // Lấy tất cả đơn phòng đã thanh toán với pagination và search
 export async function getAllBookedRooms(req, res) {
   try {

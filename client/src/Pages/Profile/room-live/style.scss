@@ -1,0 +1,343 @@
+@import '../../../Styles/variable.scss';
+
+.live-rooms-container {
+  padding: 20px;
+
+  .page-header {
+    margin-bottom: 24px;
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+
+      h2 {
+        color: $primary-color;
+        margin: 0 0 8px 0;
+        font-size: 24px;
+        font-weight: 600;
+      }
+
+      p {
+        color: #666;
+        margin: 0;
+        font-size: 14px;
+      }
+
+      .ant-btn {
+        height: 36px;
+        border-radius: 6px;
+        font-weight: 500;
+      }
+    }
+
+    .stats-overview {
+      display: flex;
+      justify-content: space-around;
+      gap: 24px;
+      padding: 16px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border: 1px solid #e9ecef;
+
+      .stat-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .stat-label {
+          font-size: 12px;
+          color: #666;
+          margin-bottom: 4px;
+        }
+
+        .stat-value {
+          font-size: 16px;
+          font-weight: 600;
+          color: $primary-color;
+        }
+      }
+    }
+  }
+
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+
+    .ant-spin {
+      margin-bottom: 16px;
+    }
+
+    p {
+      color: #666;
+      margin: 0;
+      font-size: 14px;
+    }
+  }
+
+  .live-room-card {
+    border: 1px solid #e8e8e8;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    height: 100%;
+
+    &:hover {
+      border-color: $primary-color;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .room-image-container {
+      position: relative;
+      height: 200px;
+      overflow: hidden;
+      .ant-image {
+        width: 100%;
+        .room-image {
+          height: 200px;
+          object-fit: cover;
+          background-size: contain;
+        }
+      }
+
+      &:hover .room-image {
+        transform: scale(1.05);
+      }
+
+      .status-overlay {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 4px 8px;
+        border-radius: 4px;
+      }
+    }
+
+    .room-content {
+      padding: 16px;
+
+      .room-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: $primary-color;
+        margin-bottom: 8px;
+        line-height: 1.3;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .room-info {
+        margin-bottom: 12px;
+
+        .room-address {
+          color: #666;
+          font-size: 13px;
+          margin-bottom: 8px;
+          display: -webkit-box;
+          -webkit-line-clamp: 1;
+          line-clamp: 1;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+
+        .room-details {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          margin-bottom: 8px;
+
+          .room-acreage {
+            color: #666;
+            font-size: 12px;
+          }
+        }
+
+        .amenities {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 4px;
+          margin-bottom: 8px;
+
+          .more-amenities {
+            font-size: 11px;
+            color: #999;
+            font-style: italic;
+          }
+        }
+      }
+
+      .pricing-info {
+        border-top: 1px solid #f0f0f0;
+        padding-top: 12px;
+        margin-bottom: 12px;
+
+        .price-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 4px;
+
+          .label {
+            font-size: 12px;
+            color: #666;
+          }
+
+          .price {
+            font-weight: 600;
+            color: $primary-color;
+            font-size: 14px;
+          }
+
+          .deposit-price {
+            font-weight: 500;
+            color: #52c41a;
+            font-size: 13px;
+          }
+
+          .remaining-price {
+            font-weight: 500;
+            color: #faad14;
+            font-size: 12px;
+          }
+        }
+      }
+
+      .booking-info {
+        border-top: 1px solid #f0f0f0;
+        padding-top: 8px;
+
+        .booking-date,
+        .order-code {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 4px;
+
+          .label {
+            font-size: 11px;
+            color: #999;
+          }
+
+          .date,
+          .code {
+            font-size: 11px;
+            color: #666;
+            font-weight: 500;
+          }
+
+          .code {
+            font-family: 'Courier New', monospace;
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+          }
+        }
+      }
+    }
+
+    .ant-card-actions {
+      border-top: 1px solid #f0f0f0;
+      padding: 8px 16px;
+
+      .ant-btn-link {
+        padding: 4px 8px;
+        height: auto;
+        font-size: 12px;
+        color: $primary-color;
+
+        &:hover {
+          color: $primary-color;
+          background: rgba($primary-color, 0.06);
+        }
+      }
+    }
+  }
+
+  // Modal Styling
+  .room-detail-modal {
+    .room-images {
+      margin-bottom: 16px;
+
+      .ant-image {
+        border-radius: 6px;
+        overflow: hidden;
+      }
+    }
+
+    .ant-descriptions {
+      .ant-descriptions-item-label {
+        font-weight: 500;
+        background: #fafafa;
+      }
+    }
+  }
+
+  // Empty State
+  .ant-empty {
+    padding: 40px 20px;
+  }
+
+  // Responsive Design
+  @media (max-width: 768px) {
+    padding: 16px;
+
+    .page-header {
+      .header-top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .stats-overview {
+        flex-direction: column;
+        gap: 12px;
+
+        .stat-item {
+          flex-direction: row;
+          justify-content: space-between;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px;
+
+    .page-header {
+      .header-top {
+        h2 {
+          font-size: 20px;
+        }
+      }
+    }
+
+    .live-room-card {
+      .room-content {
+        padding: 12px;
+      }
+    }
+  }
+}
+
+// Simple animations
+.live-rooms-container {
+  opacity: 0;
+  animation: fadeIn 0.3s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

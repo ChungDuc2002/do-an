@@ -18,25 +18,36 @@ const PaymentSuccess = () => {
         const searchParams = new URLSearchParams(location.search);
         const orderCode = searchParams.get('orderCode');
 
-        // Lấy thông tin từ localStorage hoặc từ state
+        console.log('PaymentSuccess: orderCode from URL:', orderCode);
+
+        if (!orderCode) {
+          throw new Error('Không có mã đơn hàng trong URL');
+        }
+
+        // Lấy thông tin từ localStorage (có thể không có đối với thanh toán lại)
         const orderId = localStorage.getItem('currentOrderId');
         const userId = localStorage.getItem('currentUserId');
         const rooms = JSON.parse(localStorage.getItem('currentRooms') || '[]');
 
-        if (!orderId || !userId) {
-          throw new Error('Thiếu thông tin đơn hàng');
-        }
+        console.log('PaymentSuccess: localStorage data:', {
+          orderId,
+          userId,
+          rooms,
+        });
 
         // Gọi API để cập nhật trạng thái thanh toán
+        // Chỉ cần orderCode là đủ, backend sẽ tìm đơn hàng theo orderCode
         const response = await axios.post(
           'http://localhost:5000/api/payos/payment-success',
           {
-            orderId,
-            userId,
-            rooms,
             orderCode,
+            orderId: orderId || undefined, // Optional
+            userId: userId || undefined, // Optional
+            rooms: rooms.length > 0 ? rooms : undefined, // Optional
           }
         );
+
+        console.log('PaymentSuccess API response:', response.data);
 
         if (response.data.success) {
           setSuccess(true);

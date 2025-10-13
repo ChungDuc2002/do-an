@@ -2,12 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { Divider, Tabs } from 'antd';
 import InformationProfile from './information';
 import InfoRooms from './rooms';
+import RoomLivePage from './room-live';
+import RoomPayFailPage from './room-pay-fail';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   UserOutlined,
   SettingOutlined,
   LogoutOutlined,
   HomeOutlined,
+  CreditCardOutlined,
 } from '@ant-design/icons';
 import axios from 'axios';
 import './style.scss';
@@ -45,9 +48,21 @@ const ProfilePage = () => {
     },
     {
       key: '2',
-      label: `Thông tin lưu trú `,
-      icon: <HomeOutlined />,
+      label: `Phòng đã thanh toán `,
+      icon: <CreditCardOutlined />,
       children: <InfoRooms />,
+    },
+    {
+      key: '3',
+      label: 'Thanh toán thất bại',
+      icon: <LogoutOutlined />,
+      children: <RoomPayFailPage />,
+    },
+    {
+      key: '4',
+      label: 'Thông tin lưu trú',
+      icon: <HomeOutlined />,
+      children: <RoomLivePage />,
     },
   ];
   const [selectedLabel, setSelectedLabel] = useState('');
