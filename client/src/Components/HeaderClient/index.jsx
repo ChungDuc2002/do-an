@@ -10,6 +10,7 @@ import {
   SettingOutlined,
   LogoutOutlined,
   HomeOutlined,
+  CreditCardOutlined,
 } from '@ant-design/icons';
 import axios from 'axios';
 import './header.scss';
@@ -94,10 +95,26 @@ const HeaderClient = () => {
     },
     {
       key: '2',
+      label: 'Phòng đã thanh toán',
+      icon: <CreditCardOutlined />,
+      onClick: () => {
+        window.location.href = '/profile/2';
+      },
+    },
+    {
+      key: '3',
+      label: 'Thanh toán thất bại',
+      icon: <LogoutOutlined />,
+      onClick: () => {
+        window.location.href = '/profile/3';
+      },
+    },
+    {
+      key: '4',
       label: 'Thông tin lưu trú',
       icon: <HomeOutlined />,
       onClick: () => {
-        window.location.href = '/profile/2';
+        window.location.href = '/profile/4';
       },
     },
     { type: 'divider' },

@@ -20,6 +20,17 @@ const HomePage = () => {
   const [roomsApartment, setRoomsApartment] = useState([]);
   const [roomsMotelRoom, setMotelRoom] = useState([]);
   const [hotRooms, setHotRooms] = useState([]);
+  const [banner, setBanner] = useState([]);
+
+  useEffect(() => {
+    const getBanner = async () => {
+      const result = await axios.get('http://localhost:5000/slides/getSlides');
+      console.log('banner', result.data);
+
+      setBanner(result.data);
+    };
+    getBanner();
+  }, []);
 
   useEffect(() => {
     const getRoomWholeHouse = async () => {
@@ -190,7 +201,7 @@ const HomePage = () => {
   return (
     <div className="wrapper-home">
       <div className="wrapper-home-banner">
-        <div className="image">
+        {/* <div className="image">
           <img
             src="https://tromoi.com/frontend/home/images/banner_default.jpg"
             alt="Banner"
@@ -203,7 +214,21 @@ const HomePage = () => {
               hơn 500 tin đăng mới và 30.000 lượt xem mỗi ngày
             </p>
           </div>
-        </div>
+        </div> */}
+        {banner &&
+          banner.length > 0 &&
+          banner.map((item, index) => (
+            <div className="image" key={index}>
+              <img
+                src={require(`../../../../server/uploads/${item.image}`)}
+                alt={`Banner ${index + 1}`}
+              />
+              <div className="info">
+                <h2>{item.title}</h2>
+                <p>{item.description}</p>
+              </div>
+            </div>
+          ))}
       </div>
       <div className="container wrapper-home-filter">
         <div className="filter-header">

@@ -1,0 +1,140 @@
+.render_image {
+  width: 100px;
+  height: 100px;
+}
+.render_add-new-banner {
+  width: 250px;
+  height: 200px;
+  margin: 0 auto;
+  display: block;
+}
+.wrapper-manager-banner {
+  .group-btn {
+    display: flex;
+    justify-content: end;
+    margin-bottom: 20px;
+    .btn-add-banner {
+      background-color: blue !important;
+      color: #fff;
+      border: none;
+      &:hover {
+        color: #fff;
+        background-color: rgb(36, 36, 192) !important;
+        scale: initial !important;
+      }
+    }
+  }
+  // căn giữa các cột trong bảng
+  .ant-table-thead {
+    tr {
+      .ant-table-cell {
+        text-align: center;
+      }
+    }
+  }
+  // căn giữa các dòng trong bảng
+  .ant-table-cell {
+    max-width: 250px;
+    text-align: center;
+  }
+}
+
+.ant-pagination {
+  margin-top: 10px;
+  text-align: end;
+}
+.wrapper-add-banner {
+  height: auto;
+  input {
+    width: 100%;
+    height: 30px;
+    margin: 10px 0;
+    padding: 0 5px;
+    outline: none;
+    border: none;
+    border-bottom: 1px solid #333;
+  }
+  .group-btn {
+    display: flex;
+    justify-content: end;
+    column-gap: 20px;
+    button {
+      margin-top: 20px;
+      background-color: transparent;
+      border: 1px solid #000000;
+      color: #000000;
+      width: 25%;
+      cursor: pointer;
+      border-radius: 5px;
+      height: 35px;
+      &:last-child {
+        border: none;
+        color: #fff;
+        background-color: blue;
+        &:hover {
+          color: #fff;
+          scale: 1.1;
+        }
+      }
+      &:hover {
+        border: none;
+        border: 1px solid #333;
+        scale: 1.1;
+      }
+    }
+  }
+}
+
+.wrapper-edit-banner {
+  .form_edit {
+    .render_img {
+      width: 350px;
+      height: 200px;
+      margin: 0 auto;
+      display: block;
+    }
+    input {
+      display: block;
+      width: 100%;
+      margin: 15px 0;
+      height: 35px;
+      padding: 0 5px;
+      border-radius: 5px;
+      outline: none;
+      border: 1px solid #333;
+      &:focus {
+        border: none;
+        outline: 1px solid blue;
+      }
+    }
+    .group-btn {
+      display: flex;
+      justify-content: end;
+      column-gap: 20px;
+      button {
+        margin-top: 20px;
+        background-color: transparent;
+        border: 1px solid #000000;
+        color: #000000;
+        width: 25%;
+        cursor: pointer;
+        border-radius: 5px;
+        height: 35px;
+        &:last-child {
+          border: none;
+          color: #fff;
+          background-color: blue;
+          &:hover {
+            color: #fff;
+            scale: 1.1;
+          }
+        }
+        &:hover {
+          border: none;
+          border: 1px solid #333;
+          scale: 1.1;
+        }
+      }
+    }
+  }
+}
