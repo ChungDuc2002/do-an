@@ -16,39 +16,101 @@ const SearchPage = () => {
   const [total, setTotal] = useState(0);
   const pageSize = 6; // 6 phòng mỗi trang
 
-  // Khởi tạo filters từ URL params
+  // Helper function để chuyển đổi từ minPrice/maxPrice thành priceOption
+  const getPriceOptionFromParams = (searchParams) => {
+    const minPrice = searchParams.get('minPrice');
+    const maxPrice = searchParams.get('maxPrice');
+
+    if (!minPrice && !maxPrice) return '';
+
+    const min = parseInt(minPrice || 0);
+    const max = parseInt(maxPrice || 50000000);
+
+    // Khớp với các khoảng cố định
+    if (min === 0 && max === 2000000) return '0-2000000';
+    if (min === 2000000 && max === 4000000) return '2000000-4000000';
+    if (min === 4000000 && max === 6000000) return '4000000-6000000';
+    if (min === 6000000 && max === 10000000) return '6000000-10000000';
+    if (min === 10000000 && max === 50000000) return '10000000-50000000';
+
+    return '';
+  };
+
+  // Helper function để chuyển đổi từ minAcreage/maxAcreage thành acreageOption
+  const getAcreageOptionFromParams = (searchParams) => {
+    const minAcreage = searchParams.get('minAcreage');
+    const maxAcreage = searchParams.get('maxAcreage');
+
+    if (!minAcreage && !maxAcreage) return '';
+
+    const min = parseInt(minAcreage || 0);
+    const max = parseInt(maxAcreage || 100);
+
+    // Khớp với các khoảng cố định
+    if (min === 0 && max === 20) return '0-20';
+    if (min === 20 && max === 30) return '20-30';
+    if (min === 30 && max === 50) return '30-50';
+    if (min === 50 && max === 100) return '50-100';
+
+    return '';
+  };
+
+  // Khởi tạo filters từ URL params - sử dụng logic tương tự Home
   const [filters, setFilters] = useState({
     type: searchParams.get('type') || '',
-    minPrice: searchParams.get('minPrice') || '',
-    maxPrice: searchParams.get('maxPrice') || '',
-    minAcreage: searchParams.get('minAcreage') || '',
-    maxAcreage: searchParams.get('maxAcreage') || '',
+    priceOption: getPriceOptionFromParams(searchParams),
+    acreageOption: getAcreageOptionFromParams(searchParams),
     views: searchParams.get('views') || '', // Thêm filter cho phòng HOT
   });
 
+  // Cập nhật filters khi URL params thay đổi
+  useEffect(() => {
+    setFilters({
+      type: searchParams.get('type') || '',
+      priceOption: getPriceOptionFromParams(searchParams),
+      acreageOption: getAcreageOptionFromParams(searchParams),
+      views: searchParams.get('views') || '',
+    });
+    setCurrentPage(1); // Reset về trang 1 khi URL thay đổi
+  }, [searchParams]);
+
   useEffect(() => {
     const fetchRooms = async (page = 1) => {
+      // Lấy trực tiếp từ searchParams để đảm bảo đồng bộ
+      const currentFilters = {
+        type: searchParams.get('type') || '',
+        views: searchParams.get('views') || '',
+        minPrice: searchParams.get('minPrice') || '',
+        maxPrice: searchParams.get('maxPrice') || '',
+        minAcreage: searchParams.get('minAcreage') || '',
+        maxAcreage: searchParams.get('maxAcreage') || '',
+      };
+
       try {
         setLoading(true);
+
         const params = {
           page: page,
           limit: pageSize,
         };
 
-        if (filters.type) params.type = filters.type;
+        if (currentFilters.type) params.type = currentFilters.type;
 
-        // Xử lý giá tiền từ range sliders
-        if (filters.minPrice) params.minPrice = filters.minPrice;
-        if (filters.maxPrice) params.maxPrice = filters.maxPrice;
+        // Xử lý giá tiền từ URL params
+        if (currentFilters.minPrice) params.minPrice = currentFilters.minPrice;
+        if (currentFilters.maxPrice) params.maxPrice = currentFilters.maxPrice;
 
-        // Xử lý diện tích từ range sliders
-        if (filters.minAcreage) params.minAcreage = filters.minAcreage;
-        if (filters.maxAcreage) params.maxAcreage = filters.maxAcreage;
+        // Xử lý diện tích từ URL params
+        if (currentFilters.minAcreage)
+          params.minAcreage = currentFilters.minAcreage;
+        if (currentFilters.maxAcreage)
+          params.maxAcreage = currentFilters.maxAcreage;
 
+        console.log('Current URL filters:', currentFilters);
         console.log('API params:', params);
 
         // Nếu là filter phòng HOT, sử dụng API khác
-        if (filters.views === 'hot') {
+        if (currentFilters.views === 'hot') {
           const response = await axios.get(
             'http://localhost:5000/room/getHotRooms',
             {
@@ -80,7 +142,7 @@ const SearchPage = () => {
         setTotal(0);
 
         // Hiển thị thông báo lỗi cho user
-        if (filters.views === 'hot') {
+        if (currentFilters.views === 'hot') {
           console.error('Lỗi tải phòng HOT:', error);
         } else {
           console.error('Lỗi tìm kiếm:', error);
@@ -91,19 +153,57 @@ const SearchPage = () => {
     };
 
     fetchRooms(currentPage);
-  }, [filters, currentPage, pageSize]);
+  }, [searchParams, currentPage, pageSize]);
 
   const handleFilterChange = (value, field) => {
-    const newFilters = { ...filters, [field]: value };
-    setFilters(newFilters);
-    setCurrentPage(1); // Reset về trang 1 khi thay đổi filter
+    console.log(`Changing filter: ${field} = ${value}`);
+
+    // Lấy TẤT CẢ filters hiện tại từ URL để không bị mất
+    const currentFilters = {
+      type: searchParams.get('type') || '',
+      views: searchParams.get('views') || '',
+      minPrice: searchParams.get('minPrice') || '',
+      maxPrice: searchParams.get('maxPrice') || '',
+      minAcreage: searchParams.get('minAcreage') || '',
+      maxAcreage: searchParams.get('maxAcreage') || '',
+    };
+
+    // Xử lý các loại filter khác nhau
+    if (field === 'type' || field === 'views') {
+      currentFilters[field] = value;
+    } else if (field === 'priceOption') {
+      if (value) {
+        const [min, max] = value.split('-');
+        currentFilters.minPrice = min;
+        currentFilters.maxPrice = max;
+      } else {
+        // Xóa filter giá nếu không chọn gì
+        currentFilters.minPrice = '';
+        currentFilters.maxPrice = '';
+      }
+    } else if (field === 'acreageOption') {
+      if (value) {
+        const [min, max] = value.split('-');
+        currentFilters.minAcreage = min;
+        currentFilters.maxAcreage = max;
+      } else {
+        // Xóa filter diện tích nếu không chọn gì
+        currentFilters.minAcreage = '';
+        currentFilters.maxAcreage = '';
+      }
+    }
+
+    console.log('New filters:', currentFilters);
 
     // Update URL params
     const newParams = new URLSearchParams();
-    Object.entries(newFilters).forEach(([key, val]) => {
-      if (val) newParams.append(key, val);
+    Object.entries(currentFilters).forEach(([key, val]) => {
+      if (val && val !== '') newParams.append(key, val);
     });
+
+    console.log('New URL params:', newParams.toString());
     setSearchParams(newParams);
+    setCurrentPage(1); // Reset về trang 1 khi thay đổi filter
   };
 
   const handlePageChange = (page) => {
@@ -132,33 +232,10 @@ const SearchPage = () => {
 
             <div className="filter-item">
               <label>Mức giá</label>
-              {filters.minPrice || filters.maxPrice ? (
-                <div className="range-display">
-                  <p>
-                    Từ {parseInt(filters.minPrice || 0).toLocaleString('vi-VN')}{' '}
-                    VNĐ
-                  </p>
-                  <p>
-                    Đến{' '}
-                    {parseInt(filters.maxPrice || 50000000).toLocaleString(
-                      'vi-VN'
-                    )}{' '}
-                    VNĐ
-                  </p>
-                </div>
-              ) : null}
               <Select
                 placeholder="Chọn khoảng giá"
-                onChange={(value) => {
-                  if (value) {
-                    const [min, max] = value.split('-');
-                    handleFilterChange(min, 'minPrice');
-                    handleFilterChange(max || '50000000', 'maxPrice');
-                  } else {
-                    handleFilterChange('', 'minPrice');
-                    handleFilterChange('', 'maxPrice');
-                  }
-                }}
+                value={filters.priceOption || undefined}
+                onChange={(value) => handleFilterChange(value, 'priceOption')}
                 style={{ width: '100%' }}
                 allowClear
               >
@@ -172,24 +249,10 @@ const SearchPage = () => {
 
             <div className="filter-item">
               <label>Diện tích</label>
-              {filters.minAcreage || filters.maxAcreage ? (
-                <div className="range-display">
-                  <p>Từ {filters.minAcreage || 0}m²</p>
-                  <p>Đến {filters.maxAcreage || 100}m²</p>
-                </div>
-              ) : null}
               <Select
                 placeholder="Chọn diện tích"
-                onChange={(value) => {
-                  if (value) {
-                    const [min, max] = value.split('-');
-                    handleFilterChange(min, 'minAcreage');
-                    handleFilterChange(max || '100', 'maxAcreage');
-                  } else {
-                    handleFilterChange('', 'minAcreage');
-                    handleFilterChange('', 'maxAcreage');
-                  }
-                }}
+                value={filters.acreageOption || undefined}
+                onChange={(value) => handleFilterChange(value, 'acreageOption')}
                 style={{ width: '100%' }}
                 allowClear
               >

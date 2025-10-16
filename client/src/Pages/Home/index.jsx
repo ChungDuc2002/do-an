@@ -5,6 +5,7 @@ import Card from '../../Components/Card';
 import HotCard from '../../Components/HotCard';
 import axios from 'axios';
 import { ArrowRightOutlined, FireFilled } from '@ant-design/icons';
+import { Select } from 'antd';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
 import 'swiper/css/navigation';
@@ -14,6 +15,8 @@ import './style.scss';
 import '../../Components/HotCard/style.scss';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+
+const { Option } = Select;
 
 const HomePage = () => {
   const [roomsWholeHouse, setRoomsWholeHouse] = useState([]);
@@ -101,10 +104,8 @@ const HomePage = () => {
   const navigate = useNavigate();
   const [filters, setFilters] = useState({
     type: '',
-    priceRange: [0, 50000000], // Sử dụng array cho slider
-    acreageRange: [0, 100], // Sử dụng array cho slider
-    priceOption: '', // Để lưu option được chọn
-    acreageOption: '', // Để lưu option được chọn
+    priceOption: '', // Chỉ sử dụng select dropdown
+    acreageOption: '', // Chỉ sử dụng select dropdown
   });
 
   const handleFilterChange = (field, value) => {
@@ -114,84 +115,23 @@ const HomePage = () => {
     }));
   };
 
-  // Xử lý khi chọn khoảng giá từ dropdown
-  const handlePriceOptionChange = (option) => {
-    setFilters((prev) => ({
-      ...prev,
-      priceOption: option,
-    }));
-
-    // Chuyển đổi option thành range cho slider
-    switch (option) {
-      case '0-2':
-        setFilters((prev) => ({ ...prev, priceRange: [0, 2000000] }));
-        break;
-      case '2-4':
-        setFilters((prev) => ({ ...prev, priceRange: [2000000, 4000000] }));
-        break;
-      case '4-6':
-        setFilters((prev) => ({ ...prev, priceRange: [4000000, 6000000] }));
-        break;
-      case '6-10':
-        setFilters((prev) => ({ ...prev, priceRange: [6000000, 10000000] }));
-        break;
-      case '10+':
-        setFilters((prev) => ({ ...prev, priceRange: [10000000, 50000000] }));
-        break;
-      default:
-        break;
-    }
-  };
-
-  // Xử lý khi chọn khoảng diện tích từ dropdown
-  const handleAcreageOptionChange = (option) => {
-    setFilters((prev) => ({
-      ...prev,
-      acreageOption: option,
-    }));
-
-    // Chuyển đổi option thành range cho slider
-    switch (option) {
-      case '0-20':
-        setFilters((prev) => ({ ...prev, acreageRange: [0, 20] }));
-        break;
-      case '20-30':
-        setFilters((prev) => ({ ...prev, acreageRange: [20, 30] }));
-        break;
-      case '30-50':
-        setFilters((prev) => ({ ...prev, acreageRange: [30, 50] }));
-        break;
-      case '50+':
-        setFilters((prev) => ({ ...prev, acreageRange: [50, 100] }));
-        break;
-      default:
-        break;
-    }
-  };
-
-  // Format giá tiền
-  const formatPrice = (price) => {
-    if (price >= 1000000) {
-      return `${(price / 1000000).toFixed(1)} triệu`;
-    }
-    return `${(price / 1000).toFixed(0)}k`;
-  };
-
   const handleSearch = () => {
     const searchParams = new URLSearchParams();
 
     if (filters.type) searchParams.append('type', filters.type);
 
-    // Xử lý giá tiền - chỉ gửi khi có thay đổi từ default
-    if (filters.priceRange[0] > 0 || filters.priceRange[1] < 50000000) {
-      searchParams.append('minPrice', filters.priceRange[0]);
-      searchParams.append('maxPrice', filters.priceRange[1]);
+    // Xử lý giá tiền từ priceOption
+    if (filters.priceOption) {
+      const [min, max] = filters.priceOption.split('-');
+      searchParams.append('minPrice', min);
+      searchParams.append('maxPrice', max);
     }
 
-    // Xử lý diện tích - chỉ gửi khi có thay đổi từ default
-    if (filters.acreageRange[0] > 0 || filters.acreageRange[1] < 100) {
-      searchParams.append('minAcreage', filters.acreageRange[0]);
-      searchParams.append('maxAcreage', filters.acreageRange[1]);
+    // Xử lý diện tích từ acreageOption
+    if (filters.acreageOption) {
+      const [min, max] = filters.acreageOption.split('-');
+      searchParams.append('minAcreage', min);
+      searchParams.append('maxAcreage', max);
     }
 
     console.log('Search params:', searchParams.toString());
@@ -201,20 +141,6 @@ const HomePage = () => {
   return (
     <div className="wrapper-home">
       <div className="wrapper-home-banner">
-        {/* <div className="image">
-          <img
-            src="https://tromoi.com/frontend/home/images/banner_default.jpg"
-            alt="Banner"
-          />
-          <div className="info">
-            <h2>Tìm nhanh, kiếm dễ</h2>
-            <h2>Trọ Mới toàn quốc</h2>
-            <p>
-              Trang thông tin và cho thuê phòng trọ nhanh chóng, hiệu quả với
-              hơn 500 tin đăng mới và 30.000 lượt xem mỗi ngày
-            </p>
-          </div>
-        </div> */}
         {banner &&
           banner.length > 0 &&
           banner.map((item, index) => (
@@ -313,101 +239,19 @@ const HomePage = () => {
               <span className="label-text">Mức giá</span>
               <span className="label-icon">💰</span>
             </div>
-            <div className="slider-container">
-              <div className="range-slider">
-                <input
-                  type="range"
-                  min="0"
-                  max="50000000"
-                  step="500000"
-                  value={filters.priceRange[0]}
-                  onChange={(e) =>
-                    handleFilterChange('priceRange', [
-                      parseInt(e.target.value),
-                      filters.priceRange[1],
-                    ])
-                  }
-                  className="slider slider-min"
-                />
-                <input
-                  type="range"
-                  min="0"
-                  max="50000000"
-                  step="500000"
-                  value={filters.priceRange[1]}
-                  onChange={(e) =>
-                    handleFilterChange('priceRange', [
-                      filters.priceRange[0],
-                      parseInt(e.target.value),
-                    ])
-                  }
-                  className="slider slider-max"
-                />
-                <div className="slider-track"></div>
-                <div
-                  className="slider-range"
-                  style={{
-                    left: `${(filters.priceRange[0] / 50000000) * 100}%`,
-                    width: `${
-                      ((filters.priceRange[1] - filters.priceRange[0]) /
-                        50000000) *
-                      100
-                    }%`,
-                  }}
-                ></div>
-              </div>
-              <div className="range-values">
-                <span className="min-value">
-                  {formatPrice(filters.priceRange[0])}
-                </span>
-                <span className="separator">-</span>
-                <span className="max-value">
-                  {formatPrice(filters.priceRange[1])}
-                </span>
-              </div>
-            </div>
-            <div className="quick-options">
-              <button
-                className={`quick-btn ${
-                  filters.priceOption === '0-2' ? 'active' : ''
-                }`}
-                onClick={() => handlePriceOptionChange('0-2')}
-              >
-                Dưới 2tr
-              </button>
-              <button
-                className={`quick-btn ${
-                  filters.priceOption === '2-4' ? 'active' : ''
-                }`}
-                onClick={() => handlePriceOptionChange('2-4')}
-              >
-                2-4tr
-              </button>
-              <button
-                className={`quick-btn ${
-                  filters.priceOption === '4-6' ? 'active' : ''
-                }`}
-                onClick={() => handlePriceOptionChange('4-6')}
-              >
-                4-6tr
-              </button>
-              <button
-                className={`quick-btn ${
-                  filters.priceOption === '6-10' ? 'active' : ''
-                }`}
-                onClick={() => handlePriceOptionChange('6-10')}
-              >
-                6-10tr
-              </button>
-              <button
-                className={`quick-btn ${
-                  filters.priceOption === '10+' ? 'active' : ''
-                }`}
-                onClick={() => handlePriceOptionChange('10+')}
-              >
-                Trên 10tr
-              </button>
-            </div>
+            <Select
+              placeholder="Chọn khoảng giá"
+              value={filters.priceOption}
+              onChange={(value) => handleFilterChange('priceOption', value)}
+              style={{ width: '100%', marginTop: '10px' }}
+              allowClear
+            >
+              <Option value="0-2000000">Dưới 2 triệu</Option>
+              <Option value="2000000-4000000">2 - 4 triệu</Option>
+              <Option value="4000000-6000000">4 - 6 triệu</Option>
+              <Option value="6000000-10000000">6 - 10 triệu</Option>
+              <Option value="10000000-50000000">Trên 10 triệu</Option>
+            </Select>
           </div>
 
           {/* Diện tích */}
@@ -416,89 +260,18 @@ const HomePage = () => {
               <span className="label-text">Diện tích</span>
               <span className="label-icon">📐</span>
             </div>
-            <div className="slider-container">
-              <div className="range-slider">
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  step="5"
-                  value={filters.acreageRange[0]}
-                  onChange={(e) =>
-                    handleFilterChange('acreageRange', [
-                      parseInt(e.target.value),
-                      filters.acreageRange[1],
-                    ])
-                  }
-                  className="slider slider-min"
-                />
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  step="5"
-                  value={filters.acreageRange[1]}
-                  onChange={(e) =>
-                    handleFilterChange('acreageRange', [
-                      filters.acreageRange[0],
-                      parseInt(e.target.value),
-                    ])
-                  }
-                  className="slider slider-max"
-                />
-                <div className="slider-track"></div>
-                <div
-                  className="slider-range"
-                  style={{
-                    left: `${(filters.acreageRange[0] / 100) * 100}%`,
-                    width: `${
-                      ((filters.acreageRange[1] - filters.acreageRange[0]) /
-                        100) *
-                      100
-                    }%`,
-                  }}
-                ></div>
-              </div>
-              <div className="range-values">
-                <span className="min-value">{filters.acreageRange[0]}m²</span>
-                <span className="separator">-</span>
-                <span className="max-value">{filters.acreageRange[1]}m²</span>
-              </div>
-            </div>
-            <div className="quick-options">
-              <button
-                className={`quick-btn ${
-                  filters.acreageOption === '0-20' ? 'active' : ''
-                }`}
-                onClick={() => handleAcreageOptionChange('0-20')}
-              >
-                Dưới 20m²
-              </button>
-              <button
-                className={`quick-btn ${
-                  filters.acreageOption === '20-30' ? 'active' : ''
-                }`}
-                onClick={() => handleAcreageOptionChange('20-30')}
-              >
-                20-30m²
-              </button>
-              <button
-                className={`quick-btn ${
-                  filters.acreageOption === '30-50' ? 'active' : ''
-                }`}
-                onClick={() => handleAcreageOptionChange('30-50')}
-              >
-                30-50m²
-              </button>
-              <button
-                className={`quick-btn ${
-                  filters.acreageOption === '50+' ? 'active' : ''
-                }`}
-                onClick={() => handleAcreageOptionChange('50+')}
-              >
-                Trên 50m²
-              </button>
-            </div>
+            <Select
+              placeholder="Chọn diện tích"
+              value={filters.acreageOption}
+              onChange={(value) => handleFilterChange('acreageOption', value)}
+              style={{ width: '100%', marginTop: '10px' }}
+              allowClear
+            >
+              <Option value="0-20">Dưới 20m²</Option>
+              <Option value="20-30">20 - 30m²</Option>
+              <Option value="30-50">30 - 50m²</Option>
+              <Option value="50-100">Trên 50m²</Option>
+            </Select>
           </div>
 
           {/* Nút tìm kiếm */}
@@ -512,8 +285,6 @@ const HomePage = () => {
               onClick={() =>
                 setFilters({
                   type: '',
-                  priceRange: [0, 50000000],
-                  acreageRange: [0, 100],
                   priceOption: '',
                   acreageOption: '',
                 })
@@ -561,7 +332,7 @@ const HomePage = () => {
             ))}
           </Swiper>
           <button className="btn-all">
-            <Link to="/search?views=hot">Xem tất cả phòng HOT</Link>
+            <Link to="/rooms?type=hot">Xem tất cả phòng HOT</Link>
             <ArrowRightOutlined />
           </button>
         </div>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Col, Row } from 'antd';
 import Card from '../../Components/Card';
+import HotCard from '../../Components/HotCard';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import './style.scss';
@@ -19,19 +20,56 @@ const RoomsPage = () => {
   useEffect(() => {
     const getRoomByType = async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:5000/room/getTypeRoom/${currentType}`
-        );
-        setRoom(res.data);
+        // Nếu là phòng HOT, sử dụng API riêng
+        if (currentType === 'hot') {
+          const res = await axios.get('http://localhost:5000/room/getHotRooms');
+          setRoom(res.data.data || []);
+        } else {
+          // Các loại phòng khác
+          const res = await axios.get(
+            `http://localhost:5000/room/getTypeRoom/${currentType}`
+          );
+          setRoom(res.data);
+        }
       } catch (err) {
         console.log(err);
+        setRoom([]);
       }
     };
-    getRoomByType();
+
+    if (currentType) {
+      getRoomByType();
+    }
   }, [currentType]);
+
+  // Helper function để lấy title theo type
+  const getPageTitle = (type) => {
+    switch (type) {
+      case 'hot':
+        return 'Phòng HOT 🔥';
+      case 'phong-tro':
+        return 'Phòng trọ';
+      case 'nha-nguyen-can':
+        return 'Nhà nguyên căn';
+      case 'can-ho':
+        return 'Căn hộ';
+      default:
+        return 'Danh sách phòng';
+    }
+  };
 
   return (
     <div className="container wrapper-rooms">
+      {/* Title cho trang */}
+      <div style={{ marginBottom: '20px', textAlign: 'center' }}>
+        <h1>{getPageTitle(currentType)}</h1>
+        {currentType === 'hot' && (
+          <p style={{ color: '#666', fontSize: '16px' }}>
+            Những phòng được quan tâm nhiều nhất
+          </p>
+        )}
+      </div>
+
       <Row gutter={[16, 16]}>
         {room?.map((item, index) => (
           <Col
@@ -43,7 +81,11 @@ const RoomsPage = () => {
             lg={12}
             xl={5}
           >
-            <Card rooms={item} />
+            {currentType === 'hot' ? (
+              <HotCard rooms={item} />
+            ) : (
+              <Card rooms={item} />
+            )}
           </Col>
         ))}
       </Row>

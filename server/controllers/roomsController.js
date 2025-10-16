@@ -166,6 +166,15 @@ export async function updateRoom(req, res) {
         }
       }
 
+      // Xử lý logic khi thay đổi status từ rented về available
+      if (roomData.status === 'available' && existingRoom.status === 'rented') {
+        // Xóa currentTenant khi phòng chuyển từ đã thuê về còn trống
+        roomData.currentTenant = null;
+        console.log(
+          `Phòng ${id} chuyển từ rented về available - đã xóa currentTenant`
+        );
+      }
+
       const updatedRoom = await rooms
         .findByIdAndUpdate(id, roomData, { new: true })
         .populate('owner', 'fullName email phone')

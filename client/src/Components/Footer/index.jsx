@@ -33,22 +33,10 @@ const Footer = () => {
             <h3>Dịch vụ khách hàng</h3>
             <ul>
               <li>
-                <Link to="/">Chính sách giao hàng</Link>
-              </li>
-              <li>
-                <Link to="/">Chính sách bảo hành</Link>
-              </li>
-              <li>
-                <Link to="/">Chính sách đổi trả</Link>
-              </li>
-              <li>
-                <Link to="/">Hướng dẫn đổi trả</Link>
-              </li>
-              <li>
                 <Link to="/">Điều khoản sử dụng</Link>
               </li>
               <li>
-                <Link to="/"> Chính sách bảo vệ dữ liệu cá nhân</Link>
+                <Link to="/profile/1"> Chính sách bảo vệ dữ liệu cá nhân</Link>
               </li>
             </ul>
           </Col>
