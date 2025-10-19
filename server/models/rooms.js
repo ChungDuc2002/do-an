@@ -47,6 +47,9 @@ const roomSchema = mongoose.Schema(
           'refrigerator',
           'washing_machine',
           'parking',
+          'elevator', // thang máy
+          'drying_area', // chỗ phơi đồ
+          'yard', // sân bãi
         ],
         required: true,
       },
@@ -67,7 +70,11 @@ const roomSchema = mongoose.Schema(
       street: String,
       ward: String,
       district: String,
-      city: String,
+      city: {
+        type: String,
+        default: 'Đà Nẵng',
+        required: true,
+      },
       location: {
         type: {
           type: String,

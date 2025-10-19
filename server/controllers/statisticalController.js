@@ -157,11 +157,11 @@ export async function getRoomStatistics(req, res) {
       },
     ]);
 
-    // Thống kê phòng theo khu vực (city)
-    const roomsByCity = await Room.aggregate([
+    // Thống kê phòng theo quận/huyện (district)
+    const roomsByDistrict = await Room.aggregate([
       {
         $group: {
-          _id: '$address.city',
+          _id: '$address.district',
           count: { $sum: 1 },
           avgPrice: { $avg: '$price' },
         },
@@ -181,7 +181,7 @@ export async function getRoomStatistics(req, res) {
       success: true,
       data: {
         detailedRoomsByType,
-        roomsByCity,
+        roomsByDistrict,
         popularRooms,
       },
     });

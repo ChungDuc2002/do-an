@@ -143,7 +143,15 @@ const PaymentPage = () => {
                       ? 'Tủ lạnh'
                       : item === 'washing_machine'
                       ? 'Máy giặt'
-                      : 'Chỗ để xe'}
+                      : item === 'parking'
+                      ? 'Chỗ để xe'
+                      : item === 'elevator'
+                      ? 'Thang máy'
+                      : item === 'drying_area'
+                      ? 'Chỗ phơi đồ'
+                      : item === 'yard'
+                      ? 'Sân bãi'
+                      : item}
                   </Tag>
                 ))}
               </p>

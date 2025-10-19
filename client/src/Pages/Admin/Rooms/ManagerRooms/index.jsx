@@ -18,12 +18,7 @@ import {
   Upload,
   Checkbox,
 } from 'antd';
-import {
-  EditOutlined,
-  DeleteOutlined,
-  UploadOutlined,
-  PlusOutlined,
-} from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import './style.scss';
 
@@ -177,7 +172,7 @@ const ManagerRoomPage = () => {
         street: room.address?.street,
         ward: room.address?.ward,
         district: room.address?.district,
-        city: room.address?.city,
+        city: 'Đà Nẵng', // Luôn luôn set thành "Đà Nẵng"
       });
 
       // Set current images
@@ -252,7 +247,7 @@ const ManagerRoomPage = () => {
         street: values.street,
         ward: values.ward,
         district: values.district,
-        city: values.city,
+        city: 'Đà Nẵng', // Luôn luôn set thành "Đà Nẵng"
       };
       formData.append('address', JSON.stringify(address));
 
@@ -539,7 +534,15 @@ const ManagerRoomPage = () => {
                                     ? 'Tủ lạnh'
                                     : item === 'washing_machine'
                                     ? 'Máy giặt'
-                                    : 'Chỗ để xe'}
+                                    : item === 'parking'
+                                    ? 'Chỗ để xe'
+                                    : item === 'elevator'
+                                    ? 'Thang máy'
+                                    : item === 'drying_area'
+                                    ? 'Chỗ phơi đồ'
+                                    : item === 'yard'
+                                    ? 'Sân bãi'
+                                    : item}
                                 </Tag>
                               ))}
                             </div>
@@ -777,6 +780,15 @@ const ManagerRoomPage = () => {
                     <Col span={8}>
                       <Checkbox value="parking">Chỗ để xe</Checkbox>
                     </Col>
+                    <Col span={8}>
+                      <Checkbox value="elevator">Thang máy</Checkbox>
+                    </Col>
+                    <Col span={8}>
+                      <Checkbox value="drying_area">Chỗ phơi đồ</Checkbox>
+                    </Col>
+                    <Col span={8}>
+                      <Checkbox value="yard">Sân bãi</Checkbox>
+                    </Col>
                   </Row>
                 </Checkbox.Group>
               </Form.Item>
@@ -818,11 +830,14 @@ const ManagerRoomPage = () => {
               <Form.Item
                 label="Tỉnh/Thành phố"
                 name="city"
-                rules={[
-                  { required: true, message: 'Vui lòng nhập tỉnh/thành phố' },
-                ]}
+                initialValue="Đà Nẵng"
               >
-                <Input placeholder="Nhập tỉnh/thành phố" />
+                <Input
+                  value="Đà Nẵng"
+                  disabled
+                  placeholder="Đà Nẵng"
+                  style={{ backgroundColor: '#f5f5f5', color: '#666' }}
+                />
               </Form.Item>
             </Col>
 

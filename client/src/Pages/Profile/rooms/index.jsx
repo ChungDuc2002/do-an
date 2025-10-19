@@ -115,6 +115,9 @@ const InfoRooms = () => {
       refrigerator: 'Tủ lạnh',
       washing_machine: 'Máy giặt',
       parking: 'Chỗ để xe',
+      elevator: 'Thang máy',
+      drying_area: 'Chỗ phơi đồ',
+      yard: 'Sân bãi',
     };
     return amenityMap[amenity] || amenity;
   };

@@ -355,17 +355,17 @@ const StatisticalPage = () => {
         </Col>
 
         <Col xs={24} lg={12}>
-          <Card title="Phòng theo khu vực">
+          <Card title="Phòng theo quận/huyện">
             <div className="room-area-details">
-              {roomsData.roomsByCity?.slice(0, 5).map((area, index) => (
+              {roomsData.roomsByDistrict?.slice(0, 5).map((district, index) => (
                 <div key={index} className="room-area-item">
                   <div className="room-area-header">
-                    <Text strong>{area._id}</Text>
-                    <Tag color="green">{area.count} phòng</Tag>
+                    <Text strong>{district._id || 'Chưa xác định'}</Text>
+                    <Tag color="green">{district.count} phòng</Tag>
                   </div>
                   <div className="room-area-info">
                     <Text type="secondary">
-                      Giá TB: {formatPrice(area.avgPrice)} VNĐ
+                      Giá TB: {formatPrice(district.avgPrice)} VNĐ
                     </Text>
                   </div>
                 </div>

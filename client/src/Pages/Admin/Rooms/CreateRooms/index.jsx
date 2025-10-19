@@ -91,6 +91,9 @@ function AddNewRoom({ onCancel }) {
     { label: 'Tủ lạnh', value: 'refrigerator' },
     { label: 'Máy giặt', value: 'washing_machine' },
     { label: 'Chỗ để xe', value: 'parking' },
+    { label: 'Thang máy', value: 'elevator' },
+    { label: 'Chỗ phơi đồ', value: 'drying_area' },
+    { label: 'Sân bãi', value: 'yard' },
   ];
 
   const roomTypes = [
@@ -123,7 +126,7 @@ function AddNewRoom({ onCancel }) {
         street: values.address.street,
         ward: values.address.ward,
         district: values.address.district,
-        city: values.address.city,
+        city: 'Đà Nẵng', // Luôn luôn set thành "Đà Nẵng"
         location: {
           type: 'Point',
           coordinates: [0, 0], // Có thể thêm coordinates thực tế nếu có
@@ -342,9 +345,14 @@ function AddNewRoom({ onCancel }) {
               <Form.Item
                 name={['address', 'city']}
                 label="Thành phố"
-                rules={[{ required: true }]}
+                initialValue="Đà Nẵng"
               >
-                <Input placeholder="Thành phố" />
+                <Input
+                  value="Đà Nẵng"
+                  disabled
+                  placeholder="Đà Nẵng"
+                  style={{ backgroundColor: '#f5f5f5', color: '#666' }}
+                />
               </Form.Item>
             </div>
           </div>
