@@ -17,7 +17,7 @@ const AdminLayout = () => {
 
   const handleLogOut = () => {
     clearLocalStorage();
-    localStorage.removeItem('authAdmin');
+    localStorage.removeItem('authAdminSon');
     navigate('/login');
   };
 
@@ -47,17 +47,17 @@ const AdminLayout = () => {
         },
       ],
     },
-    // {
-    //   key: 'sub3',
-    //   label: 'Chat Box',
-    //   icon: <WechatWorkOutlined />,
-    //   children: [
-    //     {
-    //       key: '/admin/chat',
-    //       label: 'Chat Box',
-    //     },
-    //   ],
-    // },
+    {
+      key: 'sub3',
+      label: 'Chat Box',
+      icon: <WechatWorkOutlined />,
+      children: [
+        {
+          key: '/admin/chat',
+          label: 'Chat Box',
+        },
+      ],
+    },
     {
       key: 'sub1',
       label: 'Trang chủ',

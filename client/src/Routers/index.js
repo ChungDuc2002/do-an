@@ -23,6 +23,7 @@ import ManagerBookedRooms from '../Pages/Admin/Rooms/ManagerBookedRooms';
 import StatisticalPage from '../Pages/Admin/Statistical';
 import ManagerContact from './../Pages/Admin/Trang-Chu/ManagerConntact/index';
 import ManagerSlider from '../Pages/Admin/Trang-Chu/ManagerBanner';
+import ChatBoxPage from '../Pages/Admin/Chat';
 
 const InitRouters = [
   {
@@ -110,6 +111,10 @@ const InitRouters = [
       {
         path: '/admin/manager-banner',
         element: <ManagerSlider />,
+      },
+      {
+        path: '/admin/chat',
+        element: <ChatBoxPage />,
       },
     ],
   },
