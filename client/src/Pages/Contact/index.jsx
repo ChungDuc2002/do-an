@@ -73,7 +73,7 @@ const ContactPage = () => {
           <p>Email address</p>
           <span>
             <MailOutlined />
-            nguyenchungduc2002@gmail.com
+            nguyenxuanson2002@gmail.com
           </span>
           <p>Address</p>
           <span>

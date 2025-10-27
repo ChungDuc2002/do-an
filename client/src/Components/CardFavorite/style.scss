@@ -1,5 +1,5 @@
 .ant-card {
-  width: 300px;
+  width: 300px !important;
   position: relative;
   margin: 10px 0;
   // min-height: 380px;
@@ -8,6 +8,7 @@
   }
   .ant-card-body {
     padding: 15px 5px;
+
     .ant-card-meta-title {
       font-weight: 500;
       padding: 5px 0;
