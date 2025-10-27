@@ -152,6 +152,39 @@ const ChatBox = ({ isVisible, onClose }) => {
     });
   };
 
+  // Helper function để render message content với clickable links
+  const renderMessageContent = (content) => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+
+    if (!urlRegex.test(content)) {
+      return <Text className="message-text">{content}</Text>;
+    }
+
+    const parts = content.split(urlRegex);
+
+    return (
+      <Text className="message-text">
+        {parts.map((part, index) => {
+          if (part.match(urlRegex)) {
+            return (
+              <a
+                key={index}
+                href={part}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="message-link"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {part}
+              </a>
+            );
+          }
+          return part;
+        })}
+      </Text>
+    );
+  };
+
   if (!isVisible) return null;
 
   return (
@@ -215,15 +248,70 @@ const ChatBox = ({ isVisible, onClose }) => {
                           />
                         )}
                         <div className="message-content">
-                          <div
-                            className={`message-bubble ${
-                              isOwnMessage ? 'own' : 'other'
-                            }`}
-                          >
-                            <Text className="message-text">
-                              {message.content}
-                            </Text>
-                          </div>
+                          {/* Room consultation message */}
+                          {message.messageType === 'room_consultation' &&
+                          message.roomInfo ? (
+                            <div
+                              className={`room-consultation-message ${
+                                isOwnMessage ? 'own' : 'other'
+                              }`}
+                            >
+                              <div className="room-card">
+                                <div className="room-image">
+                                  <img
+                                    src={message.roomInfo.roomImage}
+                                    alt={message.roomInfo.roomTitle}
+                                    onError={(e) => {
+                                      e.target.onerror = null;
+                                      e.target.src =
+                                        'https://placehold.co/300x200?text=No+Image';
+                                    }}
+                                  />
+                                </div>
+                                <div className="room-details">
+                                  <Text strong className="room-title">
+                                    {message.roomInfo.roomTitle}
+                                  </Text>
+                                  <Text className="room-price">
+                                    💰{' '}
+                                    {new Intl.NumberFormat().format(
+                                      message.roomInfo.roomPrice
+                                    )}
+                                    đ/tháng
+                                  </Text>
+                                  <Text className="room-type">
+                                    🏢 {message.roomInfo.roomType}
+                                  </Text>
+                                  <Button
+                                    type="primary"
+                                    size="small"
+                                    className="room-detail-btn"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      window.open(
+                                        `/rooms/${message.roomInfo.roomId}`,
+                                        '_blank'
+                                      );
+                                    }}
+                                  >
+                                    Xem chi tiết
+                                  </Button>
+                                </div>
+                              </div>
+                              <div className="consultation-text">
+                                {renderMessageContent(message.content)}
+                              </div>
+                            </div>
+                          ) : (
+                            /* Regular message */
+                            <div
+                              className={`message-bubble ${
+                                isOwnMessage ? 'own' : 'other'
+                              }`}
+                            >
+                              {renderMessageContent(message.content)}
+                            </div>
+                          )}
                           <Text type="secondary" className="message-time">
                             {formatMessageTime(message.createdAt)}
                           </Text>

@@ -361,6 +361,41 @@ const AdminChatPage = () => {
     return onlineUsers.includes(userId);
   };
 
+  // Helper function để render message content với clickable links
+  const renderMessageContent = (content) => {
+    // Regex để tìm URLs trong tin nhắn
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+
+    if (!urlRegex.test(content)) {
+      return <Text className="message-text">{content}</Text>;
+    }
+
+    // Split content và tạo clickable links
+    const parts = content.split(urlRegex);
+
+    return (
+      <Text className="message-text">
+        {parts.map((part, index) => {
+          if (part.match(urlRegex)) {
+            return (
+              <a
+                key={index}
+                href={part}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="message-link"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {part}
+              </a>
+            );
+          }
+          return part;
+        })}
+      </Text>
+    );
+  };
+
   return (
     <div className="admin-chat-container">
       <Row gutter={16} style={{ height: '100vh' }}>
@@ -550,27 +585,97 @@ const AdminChatPage = () => {
                             />
                           )}
                           <div className="message-content">
-                            <div
-                              className={`message-bubble ${
-                                isOwnMessage ? 'admin' : 'user'
-                              }`}
-                            >
-                              <Text className="message-text">
-                                {message.content}
-                              </Text>
-                              {/* Chỉ hiện button xóa cho tin nhắn user (không phải admin) */}
-                              {!isOwnMessage && (
-                                <Button
-                                  type="text"
-                                  size="small"
-                                  icon={<DeleteOutlined />}
-                                  className="delete-message-btn"
-                                  onClick={() => deleteMessage(message._id)}
-                                  danger
-                                  title="Xóa tin nhắn"
-                                />
-                              )}
-                            </div>
+                            {/* Room consultation message */}
+                            {message.messageType === 'room_consultation' &&
+                            message.roomInfo ? (
+                              <div
+                                className={`room-consultation-message ${
+                                  isOwnMessage ? 'admin' : 'user'
+                                }`}
+                              >
+                                <div className="room-card">
+                                  <div className="room-image">
+                                    <img
+                                      src={message.roomInfo.roomImage}
+                                      alt={message.roomInfo.roomTitle}
+                                      onError={(e) => {
+                                        e.target.onerror = null;
+                                        e.target.src =
+                                          'https://placehold.co/300x200?text=No+Image';
+                                      }}
+                                    />
+                                  </div>
+                                  <div className="room-details">
+                                    <Text strong className="room-title">
+                                      {message.roomInfo.roomTitle}
+                                    </Text>
+                                    <Text className="room-price">
+                                      💰 Giá:{' '}
+                                      {new Intl.NumberFormat().format(
+                                        message.roomInfo.roomPrice
+                                      )}
+                                      đ/tháng
+                                    </Text>
+                                    <Text className="room-type">
+                                      🏢 Loại: {message.roomInfo.roomType}
+                                    </Text>
+                                    <Text className="room-address">
+                                      📍 {message.roomInfo.roomAddress}
+                                    </Text>
+                                    <Button
+                                      type="primary"
+                                      size="small"
+                                      className="room-detail-btn"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        window.open(
+                                          `/rooms/${message.roomInfo.roomId}`,
+                                          '_blank'
+                                        );
+                                      }}
+                                    >
+                                      Xem chi tiết
+                                    </Button>
+                                  </div>
+                                </div>
+                                <div className="consultation-text">
+                                  {renderMessageContent(message.content)}
+                                </div>
+                                {/* Button xóa cho admin */}
+                                {!isOwnMessage && (
+                                  <Button
+                                    type="text"
+                                    size="small"
+                                    icon={<DeleteOutlined />}
+                                    className="delete-message-btn"
+                                    onClick={() => deleteMessage(message._id)}
+                                    danger
+                                    title="Xóa tin nhắn"
+                                  />
+                                )}
+                              </div>
+                            ) : (
+                              /* Regular message */
+                              <div
+                                className={`message-bubble ${
+                                  isOwnMessage ? 'admin' : 'user'
+                                }`}
+                              >
+                                {renderMessageContent(message.content)}
+                                {/* Chỉ hiện button xóa cho tin nhắn user (không phải admin) */}
+                                {!isOwnMessage && (
+                                  <Button
+                                    type="text"
+                                    size="small"
+                                    icon={<DeleteOutlined />}
+                                    className="delete-message-btn"
+                                    onClick={() => deleteMessage(message._id)}
+                                    danger
+                                    title="Xóa tin nhắn"
+                                  />
+                                )}
+                              </div>
+                            )}
                             <Text type="secondary" className="message-time">
                               {formatMessageTime(message.createdAt)}
                             </Text>

@@ -20,7 +20,7 @@ const messageSchema = mongoose.Schema(
     },
     messageType: {
       type: String,
-      enum: ['text', 'image', 'file'],
+      enum: ['text', 'image', 'file', 'room_consultation'],
       default: 'text',
     },
     conversationId: {
@@ -34,6 +34,19 @@ const messageSchema = mongoose.Schema(
     isFromAdmin: {
       type: Boolean,
       default: false,
+    },
+    // Metadata cho room consultation
+    roomInfo: {
+      roomId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Room',
+        default: null,
+      },
+      roomTitle: String,
+      roomPrice: Number,
+      roomType: String,
+      roomImage: String,
+      roomAddress: String,
     },
   },
   {

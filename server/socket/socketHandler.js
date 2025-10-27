@@ -160,14 +160,21 @@ export const initializeSocket = (io) => {
         }
 
         // Create new message
-        const newMessage = new Message({
+        const messageData = {
           senderId: socket.userId,
           receiverId,
           content: content.trim(),
           conversationId,
           messageType,
           isFromAdmin: socket.userRole === 'admin',
-        });
+        };
+
+        // Thêm thông tin phòng nếu là tin nhắn tư vấn
+        if (messageType === 'room_consultation' && data.roomInfo) {
+          messageData.roomInfo = data.roomInfo;
+        }
+
+        const newMessage = new Message(messageData);
 
         await newMessage.save();
 

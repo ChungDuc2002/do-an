@@ -1,16 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Space, Tag, Button } from 'antd';
-import { EyeOutlined, HeartFilled, HeartOutlined } from '@ant-design/icons';
+import {
+  EyeOutlined,
+  HeartFilled,
+  HeartOutlined,
+  MessageOutlined,
+} from '@ant-design/icons';
 import Meta from 'antd/es/card/Meta';
 import StoreLocationIcon from './../Icons/StoreLocationIcon';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
+import { io } from 'socket.io-client';
 import './style.scss';
 
 const CardPage = ({ rooms }) => {
   const [userId, setUserId] = useState('');
   const [isFavorite, setIsFavorite] = useState(false);
+  const [isSendingMessage, setIsSendingMessage] = useState(false);
 
   const auth = localStorage.getItem('authSon');
   const navigate = useNavigate();
@@ -137,6 +144,84 @@ const CardPage = ({ rooms }) => {
     }
   };
 
+  // Hàm gửi thông tin phòng qua chat
+  const handleConsultNow = async () => {
+    if (!auth) {
+      toast.error('Vui lòng đăng nhập để sử dụng tính năng tư vấn');
+      navigate('/login');
+      return;
+    }
+
+    setIsSendingMessage(true);
+    try {
+      const token = JSON.parse(localStorage.getItem('authSon'));
+
+      // Tạo nội dung tin nhắn với thông tin phòng
+      const roomImageUrl = rooms.images[0]?.startsWith('http')
+        ? rooms.images[0]
+        : `http://localhost:5000${rooms.images[0]}`;
+
+      const roomTypeText =
+        rooms.type === 'nha-nguyen-can'
+          ? 'Nhà nguyên căn'
+          : rooms.type === 'phong-tro'
+          ? 'Phòng trọ'
+          : rooms.type === 'can-ho'
+          ? 'Căn hộ'
+          : rooms.type;
+
+      const messageContent = `🏠 TƯ VẤN PHÒNG: ${rooms.title}
+
+📍 Địa chỉ: ${rooms.address.street}, ${rooms.address.ward}, ${
+        rooms.address.district
+      }, ${rooms.address.city}
+💰 Giá thuê: ${new Intl.NumberFormat().format(rooms.price)}đ/tháng  
+🏢 Loại phòng: ${roomTypeText}
+📐 Diện tích: ${rooms.acreage}m²
+🔗 Link chi tiết: ${window.location.origin}/rooms/${rooms._id}
+
+Xin chào! Tôi muốn được tư vấn về phòng này. Xin hãy cho tôi biết thêm thông tin chi tiết!`;
+
+      // Kết nối socket để gửi tin nhắn
+      const socket = io('http://localhost:5000', {
+        auth: { token },
+      });
+
+      socket.on('connect', () => {
+        console.log('Connected to send room consultation message');
+
+        socket.emit('send_message', {
+          content: messageContent,
+          messageType: 'room_consultation',
+          roomInfo: {
+            roomId: rooms._id,
+            roomTitle: rooms.title,
+            roomPrice: rooms.price,
+            roomType: roomTypeText,
+            roomImage: roomImageUrl,
+            roomAddress: `${rooms.address.street}, ${rooms.address.ward}, ${rooms.address.district}, ${rooms.address.city}`,
+          },
+        });
+
+        toast.success(
+          'Đã gửi yêu cầu tư vấn! Admin sẽ phản hồi sớm nhất có thể.'
+        );
+        socket.disconnect();
+        setIsSendingMessage(false);
+      });
+
+      socket.on('connect_error', (error) => {
+        console.error('Socket connection error:', error);
+        toast.error('Không thể gửi tin nhắn tư vấn');
+        setIsSendingMessage(false);
+      });
+    } catch (error) {
+      console.error('Error sending consultation message:', error);
+      toast.error('Có lỗi khi gửi yêu cầu tư vấn');
+      setIsSendingMessage(false);
+    }
+  };
+
   // Đảm bảo có status, mặc định là 'available' nếu không có
   const roomStatus = rooms.status || 'available';
   const statusInfo = getRoomStatusInfo(roomStatus);
@@ -255,6 +340,15 @@ const CardPage = ({ rooms }) => {
           >
             Đặt cọc phòng
           </Button>
+          <Button
+            type="default"
+            icon={<MessageOutlined />}
+            onClick={handleConsultNow}
+            loading={isSendingMessage}
+            className="consult-button"
+          >
+            Tư vấn ngay
+          </Button>
         </div>
       )}
 
@@ -267,6 +361,14 @@ const CardPage = ({ rooms }) => {
             className="login-button"
           >
             Đăng nhập để đặt phòng
+          </Button>
+          <Button
+            type="default"
+            icon={<MessageOutlined />}
+            onClick={handleConsultNow}
+            className="consult-button"
+          >
+            Tư vấn ngay
           </Button>
         </div>
       )}

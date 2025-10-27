@@ -175,9 +175,12 @@
       }
     }
 
-    // Nút đặt cọc và đăng nhập
+    // Nút đặt cọc, tư vấn và đăng nhập
     .booking-actions {
       margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
 
       .booking-button {
         width: 100%;
@@ -188,6 +191,28 @@
         &:hover {
           transform: translateY(-1px);
           box-shadow: 0 4px 8px rgba(24, 144, 255, 0.3);
+        }
+      }
+
+      .consult-button {
+        width: 100%;
+        height: 36px;
+        border-radius: 6px;
+        font-weight: 500;
+        border: 1px solid #52c41a;
+        color: #52c41a;
+        background: #f6ffed;
+
+        &:hover {
+          border-color: #73d13d;
+          color: #73d13d;
+          background: #f6ffed;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 8px rgba(82, 196, 26, 0.3);
+        }
+
+        .anticon {
+          margin-right: 6px;
         }
       }
 
